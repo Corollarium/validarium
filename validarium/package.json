@@ -1,0 +1,35 @@
+{
+  "name": "jquery-validarium",
+  "title": "jQuery Validarium Plugin",
+  "description": "Simple, easy and extensible form validation",
+  "version": "1.0.0",
+  "homepage": "https://github.com/Corollarium/validarium",
+  "author": {
+    "name": "Corollarium Tecnologia",
+    "url": "http://ww.corollarium.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/Corollarium/validarium.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Corollarium/validarium/issues"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "http://www.opensource.org/licenses/MIT"
+    },
+    {
+      "type": "GPL",
+      "url": "http://www.opensource.org/licenses/GPL-2.0"
+    }
+  ],
+  "scripts": {
+    "test": "lint qunit"
+  },
+  "dependencies": {},
+  "devDependencies": {
+  },
+  "keywords": ["validate", "form", "mask"]
+}
