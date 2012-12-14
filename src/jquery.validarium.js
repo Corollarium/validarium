@@ -33,19 +33,6 @@ $.validarium = function( options, form ) {
 
 	// Add novalidate tag if HTML5.
 	$(form).attr('novalidate', 'novalidate');
-	
-	this.elements.each(function() {
-		var element = this;
-		for (var i in element.attributes) {
-			if (i.substr(0, 10) == "data-rules") {
-				var rulename = i.substr(11);
-				if (rulename in self.methods) {
-					var value = self.elementValue(element);
-					self.methods[rulename].call(self, value, element, this.attributes[i]);
-				}
-			}
-		}
-	});
 };
 
 $.extend($.validarium, {
@@ -75,7 +62,33 @@ $.extend($.validarium, {
 		 * @return boolean True if ok, false ir
 		 */
 		form: function() {
-			return false;
+			var retval = true;
+			var self = this;
+
+			console.log(this.elements);
+
+			this.elements.each(function() {
+				var element = this;
+				var attributes = element.attributes;
+				for (var i = 0; i < attributes.length; i++) {
+					var name = attributes.item(i).nodeName;
+					var rulevalue = attributes.item(i).nodeValue;
+					
+					if (name.substr(0, 10) == "data-rules") {
+						var rulename = name.substr(11);
+						console.log(rulename);
+						if (rulename in self.methods) {
+							var value = self.elementValue(element);
+							var valid = self.methods[rulename].call(self, value, element, rulevalue);
+							if (!valid) {
+								$(element).addClass(self.settings.errorClass);
+							}
+							retval &= valid;
+						}
+					}
+				}
+			});
+			return retval;
 		},
 		
 		/**
