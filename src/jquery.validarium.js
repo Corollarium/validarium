@@ -1,3 +1,17 @@
+/**
+ * Validarium: a jquery plugin for validating forms
+ * 
+ * https://github.com/Corollarium/validarium
+ * 
+ * Copyright 2012 Corollarium Tecnologia: http://www.corollarium.com
+ *
+ * Dual licensed under the MIT and GPL licenses:
+ *   http://www.opensource.org/licenses/mit-license.php
+ *   http://www.gnu.org/licenses/gpl.html
+ *   
+ * Parts of this code from http://bassistance.de/jquery-plugins/jquery-plugin-validation/
+ */
+
 (function($) {
 	$.fn.validarium = function(options) {
 		var self = this;
@@ -9,11 +23,9 @@
 		
 		var settings = $.extend({}, $.fn.validarium.defaults, options || {});
 
-		// check if validarium for this form was already created
-		// TODO: if applied to multiple items?
-
 		var ret = [];
 		$(this).each(function() {
+			// check if validarium for this form was already created
 			var instance = $.data(this, 'validarium');
 			if (!instance) {
 				instance = new $.validarium(settings, this);
@@ -126,7 +138,6 @@ $.extend($.validarium, {
 			},
 	
 			sameas: function(value, element, param) {
-				// TODO
 				return (value == $(param).val());
 			},
 			
