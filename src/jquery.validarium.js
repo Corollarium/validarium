@@ -65,8 +65,6 @@ $.extend($.validarium, {
 			var retval = true;
 			var self = this;
 
-			console.log(this.elements);
-
 			this.elements.each(function() {
 				var element = this;
 				var attributes = element.attributes;
@@ -76,7 +74,6 @@ $.extend($.validarium, {
 					
 					if (name.substr(0, 10) == "data-rules") {
 						var rulename = name.substr(11);
-						console.log(rulename);
 						if (rulename in self.methods) {
 							var value = self.elementValue(element);
 							var valid = self.methods[rulename].call(self, value, element, rulevalue);
@@ -133,8 +130,16 @@ $.extend($.validarium, {
 				return (value == $(param).val());
 			},
 			
-			regex: function(value, element, param) {
-				// TODO
+			regexp: function(value, element, param) {
+				try {
+					var grep = new RegExp(param); // TODO: escaping, modifiers
+					var results = grep.exec(value);
+					return (results != null);
+				}
+				catch (e) {
+					this.debug('Invalid regex');
+				}
+				return false;
 			},
 			
 			email: function(value, element, param) {

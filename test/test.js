@@ -53,3 +53,14 @@ test("maxLength: ", function() {
 	form.find('input').val('zwer');
 	ok( v.form(), 'Valid form' );
 });
+
+test("regexp: ", function() {
+	expect( 2 );
+	var form = $('#testFormRegexp');
+	var v = $(form).validarium()[0];
+	form.find('input').val('az');
+	ok( !v.form(), 'Invalid form' );
+	form.find('input').val('zwe93');
+	ok( v.form(), 'Valid form' );
+});
+
