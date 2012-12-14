@@ -2,7 +2,19 @@
 	$.fn.validarium = function(options) {
 		var self = this;
 
+		if (!this.length) {
+			self.debug("No elements");
+			return;
+		}
+		
 		var settings = $.extend({}, $.fn.validarium.defaults, options || {});
+
+		// check if validarium for this form was already created
+		// TODO: if applied to multiple items?
+		var validariumInstance = $.data(this[0], 'validarium');
+		if (validariumInstance) {
+			return validariumInstance;
+		}
 
 		return $(this).each(function() {
 			var $settings = jQuery.extend(true, {}, settings);
@@ -11,7 +23,10 @@
 				.find("input, select, textarea")
 				.not(":submit, :reset, :image, [disabled]")
 				.not( $settings.ignore );
-				
+
+			// Add novalidate tag if HTML5.
+			$(this).attr('novalidate', 'novalidate');
+
 			elements.each(function() {
 				var element = this;
 				for (var i in element.attributes) {
@@ -24,10 +39,40 @@
 					}
 				}
 			});
+			
+			// TODO? validariumInstace = new $.validator( options, this[0] );
+			$.data(this[0], 'validarium', self);
+			
 		});
 	};
 	
-	$.fn.validarium.elementValue = function( element ) {
+$.validarium = function( options, form ) {
+	this.settings = $.extend( true, {}, $.validarium.defaults, options );
+};
+
+$.extend($.validarium, {
+	defaults: {
+		debug: false,
+		errorClass: "error",
+		validClass: "valid",
+		errorElement: "label",
+		focusInvalid: true,
+		onsubmit: true,
+		ignore: ":hidden"
+	},
+
+	debug: function(message) {
+		if (this.debug) {
+			console.warn("Validarium:" + message);
+		}
+	},
+	
+	/**
+	 * Returns the value of an element, dealing with radio/checkbox/etc.
+	 * 
+	 * @return string
+	 */
+	elementValue: function(element) {
 		var type = $(element).attr('type'),
 			val = $(element).val();
 
@@ -39,18 +84,9 @@
 			return val.replace(/\r/g, "");
 		}
 		return val;
-	};
-	
-	$.fn.validarium.defaults = {
-		errorClass: "error",
-		validClass: "valid",
-		errorElement: "label",
-		focusInvalid: true,
-		onsubmit: true,
-		ignore: ":hidden"
-	};
-	
-	$.fn.validarium.methods = {
+	},
+		
+	methods: {
 		required: function(value, element, param) {
 			if (element.nodeName.toLowerCase() === "select" ) {
 				// could be an array for select-multiple or a string, both are fine this way
@@ -82,6 +118,7 @@
 		email: function(value, element, param) {
 			
 		}
-	};
-		
+	}
+});
+
 }(jQuery));

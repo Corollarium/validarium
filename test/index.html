@@ -5,6 +5,7 @@
 	<script src="jquery.js"></script>
 	<script src="qunit/qunit-1.10.0.js"></script>
 	<script src="../src/jquery.validarium.js"></script>
+	<script src="test.js"></script>
 </head>
 <body>
 	<h1 id="qunit-header">
@@ -23,18 +24,30 @@
 	
 	<div id="qunit-fixture">
 	
-		<form class="validarium">
+		<form id="testFormRequiredText">
 			<input type="text" data-rules-required="true"/>
-			<input type="password" data-rules-required="true"/>
+		</form>
+		
+		<form id="testFormRequiredOption">
 			<select>
 				<option value="1">A</option>
 				<option value="2">B</option>
 			</select>
-
+		</form>
+		
+		<form>
 			<input type="checkbox" data-rules-required="true"/>
 			
 			<input type="radio" name="radiogrouprequired" value="1" data-rules-required="true"/>
 			<input type="radio" name="radiogrouprequired" value="2" data-rules-required="true"/>
+		</form>
+
+		<form id="sameas">
+			<input type="password" id="pw1"/>
+			<input type="password" id="pw2" data-rules-sameas="#pw1"/>
+		</form>
+		
+		<form>
 		</form>
 	</div>
 	
