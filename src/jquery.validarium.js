@@ -3,7 +3,7 @@
 		var self = this;
 
 		if (!this.length) {
-			self.debug("No elements");
+			$.validarium.debug("No elements");
 			return;
 		}
 		
@@ -17,37 +17,34 @@
 		}
 
 		return $(this).each(function() {
-			var $settings = jQuery.extend(true, {}, settings);
-
-			var elements = $(this)
-				.find("input, select, textarea")
-				.not(":submit, :reset, :image, [disabled]")
-				.not( $settings.ignore );
-
-			// Add novalidate tag if HTML5.
-			$(this).attr('novalidate', 'novalidate');
-
-			elements.each(function() {
-				var element = this;
-				for (var i in element.attributes) {
-					if (i.substr(0, 10) == "data-rules") {
-						var rulename = i.substr(11);
-						if (rulename in self.methods) {
-							var value = self.elementValue(element);
-							self.methods[rulename].call(self, value, element, this.attributes[i])
-						}
-					}
-				}
-			});
-			
-			// TODO? validariumInstace = new $.validator( options, this[0] );
-			$.data(this[0], 'validarium', self);
-			
+			var instance = new $.validarium(settings, this);
+			$.data(this, 'validarium', instance);
 		});
 	};
 	
 $.validarium = function( options, form ) {
 	this.settings = $.extend( true, {}, $.validarium.defaults, options );
+
+	var elements = $(form)
+	.find("input, select, textarea")
+	.not(":submit, :reset, :image, [disabled]")
+	.not( this.settings.ignore );
+
+	// Add novalidate tag if HTML5.
+	$(form).attr('novalidate', 'novalidate');
+	
+	elements.each(function() {
+		var element = this;
+		for (var i in element.attributes) {
+			if (i.substr(0, 10) == "data-rules") {
+				var rulename = i.substr(11);
+				if (rulename in self.methods) {
+					var value = self.elementValue(element);
+					self.methods[rulename].call(self, value, element, this.attributes[i]);
+				}
+			}
+		}
+	});
 };
 
 $.extend($.validarium, {
