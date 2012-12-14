@@ -28,6 +28,10 @@
 		<form id="testFormRequiredText">
 			<input type="text" data-rules-required="true"/>
 		</form>
+
+		<form id="testFormLength">
+			<input type="text" data-rules-minlength="3" data-rules-maxlength="10"/>
+		</form>
 		
 		<form id="testFormRequiredOption">
 			<select>
@@ -43,9 +47,9 @@
 			<input type="radio" name="radiogrouprequired" value="2" data-rules-required="true"/>
 		</form>
 
-		<form id="sameas">
-			<input type="password" id="pw1"/>
-			<input type="password" id="pw2" data-rules-sameas="#pw1"/>
+		<form id="testFormSameas">
+			<input type="password" id="sameaspw1"/>
+			<input type="password" id="sameaspw2" data-rules-sameas="#sameaspw1"/>
 		</form>
 		
 		<form>

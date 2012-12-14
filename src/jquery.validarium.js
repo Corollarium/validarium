@@ -121,12 +121,10 @@ $.extend($.validarium, {
 			},	
 	
 			minlength: function(value, element, param) {
-				// TODO
 				return $.trim(value).length >= param;
 			},
 	
 			maxlength: function(value, element, param) {
-				// TODO
 				return $.trim(value).length <= param;
 			},
 	
