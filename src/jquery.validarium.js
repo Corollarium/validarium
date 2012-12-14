@@ -121,6 +121,9 @@ $.extend($.validarium, {
 			
 		methods: {
 			required: function(value, element, param) {
+				if (param.toLowerCase() != 'true') {
+					return true;
+				} 
 				if (element.nodeName.toLowerCase() === "select" ) {
 					// could be an array for select-multiple or a string, both are fine this way
 					var val = $(element).val();
