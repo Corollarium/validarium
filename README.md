@@ -3,6 +3,7 @@ Validarium
 
 A JQuery validation plugin: practical, simple and extensible. Validates your existing forms in HTML without headaches.
 
+Some ideas and code borrowed from jquery-validate (https://github.com/jzaefferer/jquery-validation/).
 
 ## Getting Started
 
@@ -35,7 +36,7 @@ $(document).ready(function() {
 
 ```html
 <form>
-	<input type="text" data-rules-minlength="5" data-rules-minlength="10" />
+	<input type="text" data-rules-minlength="5" data-rules-maxlength="10" />
 </form>
 ```
 
