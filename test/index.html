@@ -35,26 +35,38 @@
 		</form>
 
 		<form id="testFormRegexp">
-			<input type="text" data-rules-regexp="^([a-z]{3})([0-9]{2})$"/>
+			<input type="text" id="regexnoflags" data-rules-regexp="^([a-z]{3})([0-9]{2})$"/>
+			<input type="text" id="regexflags" data-rules-regexp="^([a-z]{3})([0-9]{2})$" data-rules-regexp-flags="i"/>
+		</form>
+		
+		<form id="testFormRegexpInvalid">
+			<input type="text" data-rules-regexp="^([a-z]{3})([0-9]{2"/>
+		</form>
+
+		<form id="testFormAddMethod">
+			<input type="text" name="a" data-rules-extramethod="true"/>
 		</form>
 		
 		<form id="testFormRequiredOption">
-			<select>
+			<select data-rules-required="true">
+				<option value=""></option>
 				<option value="1">A</option>
 				<option value="2">B</option>
 			</select>
 		</form>
 		
+		<form id="testFormRequiredCheckbox">
+			<input type="checkbox" name="checkbox" value="a" data-rules-required="true"/>
+		</form>
+		
 		<form>
-			<input type="checkbox" data-rules-required="true"/>
-			
 			<input type="radio" name="radiogrouprequired" value="1" data-rules-required="true"/>
 			<input type="radio" name="radiogrouprequired" value="2" data-rules-required="true"/>
 		</form>
 
-		<form id="testFormSameas">
-			<input type="password" id="sameaspw1"/>
-			<input type="password" id="sameaspw2" data-rules-sameas="#sameaspw1"/>
+		<form id="testFormequalTo">
+			<input type="password" id="equalTopw1"/>
+			<input type="password" id="equalTopw2" data-rules-equalTo="#equalTopw1"/>
 		</form>
 		
 		<form>
