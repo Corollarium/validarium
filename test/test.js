@@ -132,3 +132,39 @@ test("addMethod: add ", function() {
 	form.find('input').val('aaa');
 	ok( v.form(), 'Valid form' );
 });
+
+test("min: ", function() {
+	// TODO
+});
+
+test("max: ", function() {
+	// TODO
+});
+
+test("email: ", function() {
+	// TODO
+});
+
+test("url: ", function() {
+	// TODO
+});
+
+test("number: ", function() {
+	// TODO
+});
+
+test("digits: ", function() {
+	// TODO
+});
+
+test("date: ", function() {
+	// TODO
+});
+
+test("dateISO: ", function() {
+	// TODO
+});
+
+test("mask: ", function() {
+	// TODO
+});
