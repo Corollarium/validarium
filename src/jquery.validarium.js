@@ -266,11 +266,11 @@ $.extend($.validarium, {
 			},
 
 			min: function(value, element, param) {
-				// TODO
+				return parseFloat(value) >= parseFloat(param);
 			},
 
 			max: function(value, element, param) {
-				// TODO
+				return parseFloat(value) <= parseFloat(param);
 			},
 
 			email: function(value, element, param) {
