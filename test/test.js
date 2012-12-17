@@ -15,6 +15,7 @@ test("required(): text", function() {
 	var form = $('#testFormRequiredText');
 	var v = $(form).validarium()[0];
 	var input = $(form.find('input[name="a"]'));
+	console.log(v);
 	ok( !v.form(), 'Invalid form' );
 	ok( input.hasClass('error'), 'Error class' );
 	ok( !input.hasClass('valid'), 'Valid class' );
@@ -102,7 +103,7 @@ test("regexp: invalid regexp", function() {
 
 
 test("addMethod: add ", function() {
-	expect( 10 );
+	expect( 11 );
 	ok( !$.validarium.addMethod(null, function(value, element, param) {1;}), 'Invalid name');
 	ok( !$.validarium.addMethod("aaa", null), 'Invalid function');
 
@@ -128,33 +129,76 @@ test("addMethod: add ", function() {
 	form.find('input').val('yyy');
 	ok( v.form(), 'Valid form' );
 
-	$.validarium.removeMethod("extramethod");
+	ret = $.validarium.removeMethod("extramethod");
+	ok( ret, 'Remove method' );
 	form.find('input').val('aaa');
 	ok( v.form(), 'Valid form' );
 });
 
 test("min: ", function() {
-	// TODO
+	expect( 2 );
+	var form = $('#testFormMinMax');
+	var v = $(form).validarium()[0];
+	form.find('input').val('2');
+	ok( !v.form(), 'Invalid form' );
+	form.find('input').val('6');
+	ok( v.form(), 'Valid form' );
 });
 
 test("max: ", function() {
-	// TODO
+	expect( 2 );
+	var form = $('#testFormMinMax');
+	var v = $(form).validarium()[0];
+	form.find('input').val('2323');
+	ok( !v.form(), 'Invalid form' );
+	form.find('input').val('6');
+	ok( v.form(), 'Valid form' );
 });
 
 test("email: ", function() {
-	// TODO
+	expect( 2 );
+	var form = $('#testFormEmail');
+	var v = $(form).validarium()[0];
+	form.find('input').val('aaweraw');
+	ok( !v.form(), 'Invalid form' );
+	form.find('input').val('zwer@corollarium.com');
+	ok( v.form(), 'Valid form' );
 });
 
 test("url: ", function() {
-	// TODO
+	expect( 2 );
+	var form = $('#testFormUrl');
+	var v = $(form).validarium()[0];
+	form.find('input').val('asfawer');
+	ok( !v.form(), 'Invalid form' );
+	form.find('input').val('http://www.corollarium.com');
+	ok( v.form(), 'Valid form' );
+/*	form.find('input').val('www.corollarium.com');
+	ok( v.form(), 'Valid form' ); */
 });
 
 test("number: ", function() {
-	// TODO
+	expect( 3 );
+	var form = $('#testFormNumber');
+	var v = $(form).validarium()[0];
+	form.find('input').val('aaweraw');
+	ok( !v.form(), 'Invalid form' );
+	form.find('input').val('234234');
+	ok( v.form(), 'Valid form' );
+	form.find('input').val('-234234.321');
+	ok( v.form(), 'Valid form' );
 });
 
 test("digits: ", function() {
-	// TODO
+	expect( 3 );
+	var form = $('#testFormDigits');
+	var v = $(form).validarium()[0];
+	form.find('input').val('aaweraw');
+	ok( !v.form(), 'Invalid form' );
+	form.find('input').val('234234');
+	ok( v.form(), 'Valid form' );
+	form.find('input').val('-234234.321');
+	ok( !v.form(), 'Invalid form' );
 });
 
 test("date: ", function() {

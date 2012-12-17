@@ -37,25 +37,27 @@
 $.validarium = function( options, form ) {
 	this.settings = $.extend( true, {}, $.validarium.defaults, options );
 
+	this.currentForm = $(form);
+
 	// TODO: does not handle dynamic forms!
-	this.elements = $(form)
+	this.elements = this.currentForm
 		.find("input, select, textarea")
 		.not(":submit, :reset, :image, [disabled]")
 		.not( this.settings.ignore );
 
 	// Add novalidate tag if HTML5.
-	$(form).attr('novalidate', 'novalidate');
+	this.currentForm.attr('novalidate', 'novalidate');
 
 	this.init();
 };
 
 $.extend($.validarium, {
 	defaults: {
-		debug: false,
-		errorClass: "error",
-		validClass: "valid",
-		errorElement: "label",
-		focusInvalid: true,
+		debug: false, /// if true, print
+		errorClass: "error", /// class added to invalid elements.
+		validClass: "valid", /// class added to valid elements.
+		errorElement: "label", /// TODO element used to display the error message
+		focusInvalid: true, /// if true, focus
 		onsubmit: true,
 		ignore: ":hidden"
 	},
@@ -67,14 +69,22 @@ $.extend($.validarium, {
 	 * @param string name The method name
 	 * @param function callback a function(value, element, param) or function(value, element)
 	 * @param string message
+	 * @param string eventtype
 	 * @return boolean
 	 */
-	addMethod: function(name, callback, message) {
+	addMethod: function(name, callback, message, eventtype) {
 		if (!name || !$.isFunction(callback)) {
 			return false;
 		}
 		// TODO: message
-		$.validarium.prototype.methods[name] = callback;
+
+		if (eventtype == undefined) {
+			eventtype = 'ontype';
+		}
+		else if (!eventtype in ['ontype', 'onblur', 'onsubmit']) {
+			return false;
+		}
+		$.validarium.prototype[eventtype][name] = callback;
 		return true;
 	},
 
@@ -83,13 +93,34 @@ $.extend($.validarium, {
 	 *
 	 * @param string name
 	 */
-	removeMethod: function(name) {
-		delete $.validarium.prototype.methods[name];
+	removeMethod: function(name, eventtype) {
+		var types = ['ontype', 'onblur', 'onsubmit'];
+		if (eventtype == undefined) {
+			var retval = true;
+			for (var i in types) {
+				retval = this.removeMethod(name, types[i]);
+				if (!retval) break;
+			}
+			return retval;
+		}
+		else if (!eventtype in types) {
+			return false;
+		}
+		delete $.validarium.prototype[eventtype][name];
+		return true;
 	},
 
 	prototype: {
 		init: function() {
-
+/*			this.currentForm
+			.validateDelegate(":text, [type='password'], [type='file'], select, textarea, " +
+				"[type='number'], [type='search'] ,[type='tel'], [type='url'], " +
+				"[type='email'], [type='datetime'], [type='date'], [type='month'], " +
+				"[type='week'], [type='time'], [type='datetime-local'], " +
+				"[type='range'], [type='color'] ",
+				"focusin focusout keyup", delegate)
+			.validateDelegate("[type='radio'], [type='checkbox'], select, option", "click", delegate);
+*/
 		},
 
 		settings: {},
@@ -112,27 +143,64 @@ $.extend($.validarium, {
 			this.elements.each(function() {
 				var element = this;
 				var attributes = element.attributes;
+				var firstinvalid = null; // first invalid element, for focus()
+
 				for (var i = 0; i < attributes.length; i++) {
 					var name = attributes.item(i).nodeName.toLowerCase();
 					var rulevalue = attributes.item(i).nodeValue;
 
 					if (name.substr(0, 10) == "data-rules") {
 						var rulename = name.substr(11);
-						if (rulename in self.methods) {
-							var value = self.elementValue(element);
-							var valid = self.methods[rulename].call(self, value, element, rulevalue);
-							if (!valid) {
-								$(element).removeClass(self.settings.validClass).addClass(self.settings.errorClass);
-							}
-							else {
-								$(element).removeClass(self.settings.errorClass).addClass(self.settings.validClass);
-							}
-							retval &= valid;
+						var method = self.getMethod(rulename);
+						if (!method) {
+							continue;
 						}
+						var value = self.elementValue(element);
+						var valid = method.call(self, value, element, rulevalue);
+						if (!valid) {
+							$(element).removeClass(self.settings.validClass).addClass(self.settings.errorClass);
+							if (!firstinvalid) {
+								firstinvalid = element;
+							}
+						}
+						else {
+							$(element).removeClass(self.settings.errorClass).addClass(self.settings.validClass);
+						}
+						retval &= valid;
 					}
 				}
+
+				if (self.settings.focusInvalid && firstinvalid) {
+					firstinvalid.focus();
+				}
 			});
+
+			if (!retval) {
+				this.currentForm.triggerHandler("invalid-form", [this]);
+			}
 			return retval;
+		},
+
+		/**
+		 * Returns the callback
+		 *
+		 * @param methodname
+		 * @param eventtype
+		 * @returns
+		 */
+		getMethod: function(methodname, eventtype) {
+			switch (eventtype) {
+			case undefined:
+			case null:
+			case 'ontype':
+				if (methodname in this.ontype) return this.ontype[methodname];
+			case 'onblur':
+				if (methodname in this.onblur) return this.onblur[methodname];
+			case 'onsubmit':
+				if (methodname in this.onsubmit) return this.onsubmit[methodname];
+			default:
+				return null;
+			}
 		},
 
 		/**
@@ -154,7 +222,11 @@ $.extend($.validarium, {
 			return val;
 		},
 
-		methods: {
+		/**
+		 * Methods that should be called whenever a key is typed (or clicks for some
+		 * elements like select), on blur events or on submit.
+		 */
+		ontype: {
 			required: function(value, element, param) {
 				if (param.toLowerCase() != 'true') {
 					return true;
@@ -177,7 +249,6 @@ $.extend($.validarium, {
 			},
 
 			equalto: function(value, element, param) {
-				console.log('awerawe');
 				return (value == $(param).val());
 			},
 
@@ -209,7 +280,7 @@ $.extend($.validarium, {
 
 			url: function(value, element, param) {
 				// contributed by Scott Gonzalez: http://projects.scottsplayground.com/iri/
-				return this.optional(element) || /^(https?|s?ftp):\/\/(((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:)*@)?(((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]))|((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)(:\d*)?)(\/((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)+(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)*)*)?)?(\?((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|[\uE000-\uF8FF]|\/|\?)*)?(#((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|\/|\?)*)?$/i.test(value);
+				return /^(https?|s?ftp):\/\/(((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:)*@)?(((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]))|((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)(:\d*)?)(\/((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)+(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)*)*)?)?(\?((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|[\uE000-\uF8FF]|\/|\?)*)?(#((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|\/|\?)*)?$/i.test(value);
 			},
 
 			number: function(value, element, param) {
@@ -231,6 +302,20 @@ $.extend($.validarium, {
 			mask: function(value, element, param) {
 				// TODO
 			}
+		},
+
+		/**
+		 * Methods that should be called only on blur events or on submit.
+		 */
+		onblur: {
+
+		},
+
+		/**
+		 * Methods that should be called only on submit or when form() is called.
+		 */
+		onsubmit: {
+
 		}
 	}
 });
