@@ -310,7 +310,7 @@ $.extend($.validarium, {
 		 * Methods that should be called only on blur events or on submit.
 		 */
 		onblur: {
-
+			//Test event
 		},
 
 		/**
