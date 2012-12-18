@@ -125,6 +125,8 @@ $.extend($.validarium, {
 
 		settings: {},
 
+		errormessages: {},
+
 		debug: function(message) {
 			if (('debug' in this.settings && this.settings.debug) || $.validarium.defaults.debug) {
 				console.warn("Validarium:" + message);
