@@ -84,7 +84,7 @@ $.extend($.validarium, {
 		else if (!eventtype in ['ontype', 'onblur', 'onsubmit']) {
 			return false;
 		}
-		$.validarium.prototype[eventtype][name] = callback;
+		$.validarium.prototype[eventtype][name.toLowerCase()] = callback;
 		return true;
 	},
 
@@ -237,8 +237,7 @@ $.extend($.validarium, {
 					// could be an array for select-multiple or a string, both are fine this way
 					var val = $(element).val();
 					return val && val.length > 0;
-				}
-				console.log(element.nodeName, $.trim(value).length);
+				}				
 				return $.trim(value).length > 0;
 			},
 
@@ -297,7 +296,7 @@ $.extend($.validarium, {
 				 return !/Invalid|NaN/.test(new Date(value).toString());
 			},
 
-			dateISO: function(value, element, param) {
+			dateiso: function(value, element, param) {
 				return /^\d{4}[\/\-]\d{1,2}[\/\-]\d{1,2}$/.test(value);
 			},
 
@@ -310,7 +309,7 @@ $.extend($.validarium, {
 		 * Methods that should be called only on blur events or on submit.
 		 */
 		onblur: {
-			//Test event
+			
 		},
 
 		/**

@@ -202,11 +202,29 @@ test("digits: ", function() {
 });
 
 test("date: ", function() {
-	// TODO
+	expect( 3 );
+	
+	var form = $('#testFormDate');
+	var v = $(form).validarium()[0];
+	form.find('input').val('aaweraw');
+	ok( !v.form(), 'Invalid form' );
+	form.find('input').val('02/20/2012');
+	ok( v.form(), 'Valid form' );
+	form.find('input').val('20/20/2020');
+	ok( !v.form(), 'Invalid form' );
 });
 
 test("dateISO: ", function() {
-	// TODO
+	expect( 3 );
+	
+	var form = $('#testFormDateISO');
+	var v = $(form).validarium()[0];
+	form.find('input').val('aaweraw');
+	ok( !v.form(), 'Invalid form' );
+	form.find('input').val('2012/10/20');
+	ok( v.form(), 'Valid form' );
+	form.find('input').val('20/20/2020');
+	ok( !v.form(), 'Invalid form' );
 });
 
 test("mask: ", function() {
