@@ -53,10 +53,38 @@ $(document).ready(function() {
 ### Field must obey a regex
 ```html
 <form>
-	<input type="text" data-rules-regex="([a-zA-Z]{5})" />
+	<input type="text" data-rules-regex="^([a-zA-Z]{5})$" />
 </form>
 ```
 
+### Floating point numbers, with minimum and maximum
+```html
+<form>
+	<input type="text" data-rules-min="4" data-rules-max="10" data-rules-number="true" />
+</form>
+```
+
+### Positive integers, with minimum and maximum
+```html
+<form>
+	<input type="text" data-rules-min="4" data-rules-max="10" data-rules-digits="true" />
+</form>
+```
+
+### Strings with maximum and minimum length
+```html
+<form>
+	<input type="text" data-rules-minlength="4" data-rules-maxlength="10" />
+</form>
+```
+
+### Url, email
+```html
+<form>
+	<input type="text" name="someurl" data-rules-url="true" />
+	<input type="text" name="someemail" data-rules-email="true" />
+</form>
+```
 
 ## License
 Copyright (c) 2012 Corollarium Tecnologia http://www.corollarium.com
