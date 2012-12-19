@@ -295,20 +295,24 @@ $.extend($.validarium, {
 				return /^\d+$/.test(value);
 			},
 
+			/**
+			 * Validated a MM-DD-YYYY or MM/DD/YYYY date. 
+			 * Checks if it is a valid date.
+			 */
 			date: function(value, element, param) {
 				 return !/Invalid|NaN/.test(new Date(value).toString());
 			},
 
 			/**
-			 * Validated a YYYY-MM-DD or YYYY/MM/DD date. Checks if it is a
-			 * valid date.
+			 * Validated a YYYY-MM-DD or YYYY/MM/DD date. 
+			 * Checks if it is a valid date.
 			 */
 			dateiso: function(value, element, param) {
-				var regex = /^(\d{4})[\/\-](\d{1,2})[\/\-](\d{1,2})$/;
+				var regex = /^(\d{4})[\/\-\.](\d{1,2})[\/\-\.](\d{1,2})$/;
 				var match = regex.exec(value);
 				if (!match) { return null; }
 
-				return this.ontype.date(value, element, param);
+				return this.ontype.date(match[2] + '/' + match[3] + '/' + match[1], element, param);
 			},
 
 			mask: function(value, element, param) {

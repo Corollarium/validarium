@@ -202,7 +202,7 @@ test("digits: ", function() {
 });
 
 test("date: ", function() {
-	expect( 3 );
+	expect( 6 );
 	
 	var form = $('#testFormDate');
 	var v = $(form).validarium()[0];
@@ -210,12 +210,18 @@ test("date: ", function() {
 	ok( !v.form(), 'Invalid form' );
 	form.find('input').val('02/20/2012');
 	ok( v.form(), 'Valid form' );
+	form.find('input').val('02-29-2012');
+	ok( v.form(), 'Valid form' );
+	form.find('input').val('02.30.2013');
+	ok( v.form(), 'Valid form' );
+	form.find('input').val('02|30|2013');
+	ok( !v.form(), 'Invalid form' );
 	form.find('input').val('20/20/2020');
 	ok( !v.form(), 'Invalid form' );
 });
 
 test("dateISO: ", function() {
-	expect( 3 );
+	expect( 7 );
 	
 	var form = $('#testFormDateISO');
 	var v = $(form).validarium()[0];
@@ -224,6 +230,14 @@ test("dateISO: ", function() {
 	form.find('input').val('2012/10/20');
 	ok( v.form(), 'Valid form' );
 	form.find('input').val('20/20/2020');
+	ok( !v.form(), 'Invalid form' );
+	form.find('input').val('2020/99/99');
+	ok( !v.form(), 'Invalid form' );
+	form.find('input').val('2012-02-29');
+	ok( v.form(), 'Valid form' );
+	form.find('input').val('2013.02.30');
+	ok( v.form(), 'Valid form' );
+	form.find('input').val('2013|02|30');
 	ok( !v.form(), 'Invalid form' );
 });
 
