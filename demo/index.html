@@ -1,0 +1,69 @@
+<html>
+<head>
+	<title>Validarium test suite</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<style type="text/css">
+		label { display:block;}
+		.valid { border: 1px solid green;}
+		.error { border: 1px solid red;}
+		.validarium-error { color: red; font-weight: bold;}
+	</style>
+	<script src="../lib/jquery-1.8.3.js"></script>
+	<script src="../src/jquery.validarium.js"></script>
+	<script src="test.js"></script>
+</head>
+<body>
+	<h1>
+		<a href="https://github.com/Corollarium/validarium">Validarium</a>
+	</h1>
+
+	<form id="demo">
+		<label>Required: <input type="text" name="a" data-rules-required="true"/></label>
+		<label>Not required: <input type="text" name="b" data-rules-required="false"/></label>
+		
+		<label>Between 3 and 10 characters<input type="text" data-rules-minlength="3" data-rules-maxlength="10"/></label>
+
+		<label>3 characters, 2 numbers.<input type="text" id="regexflags" data-rules-regexp="^([a-z]{3})([0-9]{2})$" data-rules-regexp-flags="i"/></label>
+
+		<label>Required:
+			<select data-rules-required="true">
+				<option value=""></option>
+				<option value="1">A</option>
+				<option value="2">B</option>
+			</select>
+		</label>
+		
+		<label>Required:
+			<input type="checkbox" name="checkbox" value="a" data-rules-required="true"/>
+		</label>
+		
+		<label>Required:
+			<input type="radio" name="radiogrouprequired" value="1" data-rules-required="true"/>
+			<input type="radio" name="radiogrouprequired" value="2" data-rules-required="true"/>
+		</label>
+
+		<label>Fields must match
+			<input type="password" id="equalTopw1"/>
+			<input type="password" id="equalTopw2" data-rules-equalTo="#equalTopw1"/>
+		</label>
+
+		<label>Number, minimum 4.3, maximum 10.0
+			<input type="text" name="a" data-rules-number="true" data-rules-min="4.3" data-rules-max="10"/>
+		</label>
+
+		<label>Email
+			<input type="text" name="a" data-rules-email="true"/>
+		</label>
+
+		<label>URL
+			<input type="text" name="a" data-rules-url="true"/>
+		</label>
+
+		<input type="submit"/>
+	</form>
+	
+	<script type="text/javascript">
+		$('form#demo').validarium();
+	</script>
+</body>
+</html>

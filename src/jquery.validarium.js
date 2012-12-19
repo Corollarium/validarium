@@ -20,7 +20,6 @@
 		}
 
 		var settings = $.extend({}, $.fn.validarium.defaults, options || {});
-
 		var ret = [];
 		$(this).each(function() {
 			// check if validarium for this form was already created
@@ -115,15 +114,26 @@ $.extend($.validarium, {
 
 	prototype: {
 		init: function() {
-/*			this.currentForm
-			.validateDelegate(":text, [type='password'], [type='file'], select, textarea, " +
+			var self = this;
+
+			this.currentForm.delegate(":submit", "click", function(){
+				alert('submit');
+				self.form("onsubmit");
+				return false;
+			});
+
+			this.currentForm
+			.delegate(":text, [type='password'], [type='file'], select, textarea, " +
 				"[type='number'], [type='search'] ,[type='tel'], [type='url'], " +
 				"[type='email'], [type='datetime'], [type='date'], [type='month'], " +
 				"[type='week'], [type='time'], [type='datetime-local'], " +
 				"[type='range'], [type='color'] ",
-				"focusin focusout keyup", delegate)
-			.validateDelegate("[type='radio'], [type='checkbox'], select, option", "click", delegate);
-*/
+				"keyup", function() { self.elementValidate(this, 'ontype'); })
+			.delegate("[type='radio'], [type='checkbox'], select, option", "click",
+				function() { self.elementValidate(this, 'ontype'); });
+
+			this.currentForm.delegate('input, select, option, textarea', 'onfocusout',
+				function() { self.elementValidate(this, 'onblur'); });
 		},
 
 		settings: {},
@@ -136,54 +146,100 @@ $.extend($.validarium, {
 			}
 		},
 
+		/**
+		 * Validates an event and displays an error message if invalid
+		 *
+		 * @param element
+		 * @param eventtype
+		 * @returns {Boolean}
+		 */
+		elementValidate: function(element, eventtype) {
+			var self = this;
+			var attributes = element.attributes;
+
+			for (var i = 0; i < attributes.length; i++) {
+				var name = attributes.item(i).nodeName.toLowerCase();
+				var rulevalue = attributes.item(i).nodeValue;
+
+				if (name.substr(0, 10) == "data-rules") {
+					var rulename = name.substr(11);
+					var method = self.getMethod(rulename, eventtype);
+					if (!method) {
+						continue;
+					}
+					var value = self.elementValue(element);
+					var valid = method.call(self, value, element, rulevalue);
+					self.elementNotify(element, valid, "Error"); // TODO message
+					if (!valid) {
+						return false;
+					}
+				}
+			}
+			return true;
+		},
 
 		/**
 		 * Validates the form
 		 * @return boolean True if ok, false ir
 		 */
-		form: function() {
+		form: function(eventtype) {
 			var retval = true;
 			var self = this;
 
+			var firstinvalid = null; // first invalid element, for focus()
 			this.elements.each(function() {
 				var element = this;
-				var attributes = element.attributes;
-				var firstinvalid = null; // first invalid element, for focus()
 
-				for (var i = 0; i < attributes.length; i++) {
-					var name = attributes.item(i).nodeName.toLowerCase();
-					var rulevalue = attributes.item(i).nodeValue;
-
-					if (name.substr(0, 10) == "data-rules") {
-						var rulename = name.substr(11);
-						var method = self.getMethod(rulename);
-						if (!method) {
-							continue;
-						}
-						var value = self.elementValue(element);
-						var valid = method.call(self, value, element, rulevalue);
-						if (!valid) {
-							$(element).removeClass(self.settings.validClass).addClass(self.settings.errorClass);
-							if (!firstinvalid) {
-								firstinvalid = element;
-							}
-						}
-						else {
-							$(element).removeClass(self.settings.errorClass).addClass(self.settings.validClass);
-						}
-						retval &= valid;
-					}
-				}
-
-				if (self.settings.focusInvalid && firstinvalid) {
-					firstinvalid.focus();
+				var valid = self.elementValidate(element, eventtype);
+				if (!valid) {
+					firstinvalid = element;
 				}
 			});
+
+			if (eventtype == "onsubmit" && self.settings.focusInvalid && firstinvalid) {
+				firstinvalid.focus();
+			}
 
 			if (!retval) {
 				this.currentForm.triggerHandler("invalid-form", [this]);
 			}
 			return retval;
+		},
+
+		/**
+		 * Returns the an element, associated with the parameter, that is used to
+		 * print the error message.
+		 *
+		 * @param element
+		 * @returns
+		 */
+		elementError: function(element) {
+			var parent = $(element).parent();
+			var errorel = parent.find(this.settings.errorElement + ".validarium-error");
+			if (!errorel.length) {
+				errorel = $('<' + this.settings.errorElement + ' class="validarium-error"/>');
+				parent.append(errorel);
+				return errorel;
+			}
+			return errorel[0];
+		},
+
+		/**
+		 *
+		 * @param element The element being checked
+		 * @param valid True if error, false if valid
+		 * @param message
+		 */
+		elementNotify: function(element, valid, message) {
+			var errorel = this.elementError(element);
+			if (!valid) {
+				$(errorel).html(message).show();
+				$(element).removeClass(this.settings.validClass).addClass(this.settings.errorClass);
+			}
+			else {
+				$(errorel).html('').hide();
+				$(element).removeClass(this.settings.errorClass).addClass(this.settings.validClass);
+			}
 		},
 
 		/**
@@ -296,7 +352,7 @@ $.extend($.validarium, {
 			},
 
 			/**
-			 * Validated a MM-DD-YYYY or MM/DD/YYYY date. 
+			 * Validated a MM-DD-YYYY or MM/DD/YYYY date.
 			 * Checks if it is a valid date.
 			 */
 			date: function(value, element, param) {
@@ -304,13 +360,13 @@ $.extend($.validarium, {
 			},
 
 			/**
-			 * Validated a YYYY-MM-DD or YYYY/MM/DD date. 
+			 * Validated a YYYY-MM-DD or YYYY/MM/DD date.
 			 * Checks if it is a valid date.
 			 */
 			dateiso: function(value, element, param) {
 				var regex = /^(\d{4})[\/\-\.](\d{1,2})[\/\-\.](\d{1,2})$/;
 				var match = regex.exec(value);
-				if (!match) { return null; }
+				if (!match) { return false; }
 
 				return this.ontype.date(match[2] + '/' + match[3] + '/' + match[1], element, param);
 			},
