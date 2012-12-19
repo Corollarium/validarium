@@ -78,13 +78,15 @@ $.extend($.validarium, {
 		}
 		// TODO: message
 
+		name = name.toLowerCase();
+
 		if (eventtype == undefined) {
 			eventtype = 'ontype';
 		}
 		else if (!eventtype in ['ontype', 'onblur', 'onsubmit']) {
 			return false;
 		}
-		$.validarium.prototype[eventtype][name.toLowerCase()] = callback;
+		$.validarium.prototype[eventtype][name] = callback;
 		return true;
 	},
 
@@ -95,6 +97,7 @@ $.extend($.validarium, {
 	 */
 	removeMethod: function(name, eventtype) {
 		var types = ['ontype', 'onblur', 'onsubmit'];
+		name = name.toLowerCase();
 		if (eventtype == undefined) {
 			var retval = true;
 			for (var i in types) {
@@ -237,7 +240,7 @@ $.extend($.validarium, {
 					// could be an array for select-multiple or a string, both are fine this way
 					var val = $(element).val();
 					return val && val.length > 0;
-				}				
+				}
 				return $.trim(value).length > 0;
 			},
 
@@ -296,8 +299,16 @@ $.extend($.validarium, {
 				 return !/Invalid|NaN/.test(new Date(value).toString());
 			},
 
+			/**
+			 * Validated a YYYY-MM-DD or YYYY/MM/DD date. Checks if it is a
+			 * valid date.
+			 */
 			dateiso: function(value, element, param) {
-				return /^\d{4}[\/\-]\d{1,2}[\/\-]\d{1,2}$/.test(value);
+				var regex = /^(\d{4})[\/\-](\d{1,2})[\/\-](\d{1,2})$/;
+				var match = regex.exec(value);
+				if (!match) { return null; }
+
+				return this.ontype.date(value, element, param);
 			},
 
 			mask: function(value, element, param) {
@@ -309,7 +320,7 @@ $.extend($.validarium, {
 		 * Methods that should be called only on blur events or on submit.
 		 */
 		onblur: {
-			
+
 		},
 
 		/**
