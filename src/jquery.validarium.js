@@ -305,6 +305,8 @@ $.extend($.validarium, {
 		 * elements like select), on blur events or on submit.
 		 */
 		ontype: {
+
+			// https://github.com/Corollarium/validarium/wiki/required
 			required: function(value, element, param) {
 				if (param.toLowerCase() != 'true') {
 					return true;
@@ -317,18 +319,22 @@ $.extend($.validarium, {
 				return $.trim(value).length > 0;
 			},
 
+			// https://github.com/Corollarium/validarium/wiki/minlength
 			minlength: function(value, element, param) {
 				return $.trim(value).length >= param;
 			},
 
+			// https://github.com/Corollarium/validarium/wiki/maxlength
 			maxlength: function(value, element, param) {
 				return $.trim(value).length <= param;
 			},
 
+			// https://github.com/Corollarium/validarium/wiki/equalto
 			equalto: function(value, element, param) {
 				return (value == $(param).val());
 			},
 
+			// https://github.com/Corollarium/validarium/wiki/regexp
 			regexp: function(value, element, param) {
 				try {
 					var flags = $(element).attr('data-rules-regexp-flags');
@@ -342,43 +348,50 @@ $.extend($.validarium, {
 				return false;
 			},
 
+			// https://github.com/Corollarium/validarium/wiki/min
 			min: function(value, element, param) {
 				return !value || (parseFloat(value) >= parseFloat(param));
 			},
 
+			// https://github.com/Corollarium/validarium/wiki/max
 			max: function(value, element, param) {
 				return !value || (parseFloat(value) <= parseFloat(param));
 			},
 
+			// https://github.com/Corollarium/validarium/wiki/email
 			email: function(value, element, param) {
 				// contributed by Scott Gonzalez: http://projects.scottsplayground.com/email_address_validation/
 				return !value || /^((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))$/i.test(value);
 			},
 
+			// https://github.com/Corollarium/validarium/wiki/url
 			url: function(value, element, param) {
 				// contributed by Scott Gonzalez: http://projects.scottsplayground.com/iri/
 				return !value ||/^(https?|s?ftp):\/\/(((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:)*@)?(((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]))|((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)(:\d*)?)(\/((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)+(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)*)*)?)?(\?((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|[\uE000-\uF8FF]|\/|\?)*)?(#((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|\/|\?)*)?$/i.test(value);
 			},
 
+			// https://github.com/Corollarium/validarium/wiki/number
 			number: function(value, element, param) {
 				return !value ||/^-?(?:\d+|\d{1,3}(?:,\d{3})+)?(?:\.\d+)?$/.test(value);
 			},
 
+			// https://github.com/Corollarium/validarium/wiki/digits
 			digits: function(value, element, param) {
 				return !value ||/^\d+$/.test(value);
 			},
 
 			/**
-			 * Validated a MM-DD-YYYY or MM/DD/YYYY date.
 			 * Checks if it is a valid date.
+			 * https://github.com/Corollarium/validarium/wiki/date
 			 */
 			date: function(value, element, param) {
 				 return !value || !/Invalid|NaN/.test(new Date(value).toString());
 			},
 
 			/**
-			 * Validated a YYYY-MM-DD or YYYY/MM/DD date.
+			 * Validates a YYYY-MM-DD or YYYY/MM/DD date.
 			 * Checks if it is a valid date.
+			 * https://github.com/Corollarium/validarium/wiki/dateiso
 			 */
 			dateiso: function(value, element, param) {
 				if (!value) return true;
@@ -390,6 +403,7 @@ $.extend($.validarium, {
 				return this.ontype.date(match[2] + '/' + match[3] + '/' + match[1], element, param);
 			},
 
+			// https://github.com/Corollarium/validarium/wiki/mask
 			mask: function(value, element, param) {
 				// TODO
 			}
@@ -400,6 +414,9 @@ $.extend($.validarium, {
 		 */
 		onblur: {
 
+			remote: function(value, element, param) {
+				// TODO
+			}
 		},
 
 		/**

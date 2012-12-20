@@ -24,6 +24,10 @@ $(document).ready(function() {
 </script>
 ```
 
+## Full documentation
+
+See https://github.com/Corollarium/validarium/wiki
+
 ## Examples
 
 ### Required fields
