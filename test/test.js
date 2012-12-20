@@ -243,3 +243,6 @@ test("dateISO: ", function() {
 test("mask: ", function() {
 	// TODO
 });
+
+
+// TODO: test submitHandler()

@@ -122,13 +122,19 @@ $.extend($.validarium, {
 					// prevent form submit to be able to see console output
 					event.preventDefault();
 				}
+			});
 
+			this.currentForm.bind("submit", function(event) {
 				var valid = self.form("onsubmit");
 
 				if (valid && self.settings.submitHandler) {
-					self.settings.submitHandler.call(self, self.currentForm, event);
+					valid = self.settings.submitHandler.call(self, self.currentForm, event);
 				}
 
+				if (!valid) {
+					event.preventDefault();
+					event.stopPropagation();
+				}
 				return valid;
 			});
 
