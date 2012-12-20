@@ -128,7 +128,7 @@ $.extend($.validarium, {
 				var valid = self.form("onsubmit");
 
 				if (valid && self.settings.submitHandler) {
-					valid = self.settings.submitHandler.call(self, self.currentForm, event);
+					valid = self.settings.submitHandler.call(self, self.currentForm[0], event);
 				}
 
 				if (!valid) {
