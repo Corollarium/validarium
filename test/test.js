@@ -15,7 +15,6 @@ test("required(): text", function() {
 	var form = $('#testFormRequiredText');
 	var v = $(form).validarium()[0];
 	var input = $(form.find('input[name="a"]'));
-	console.log(v);
 	ok( !v.form(), 'Invalid form' );
 	ok( input.hasClass('error'), 'Error class' );
 	ok( !input.hasClass('valid'), 'Valid class' );
@@ -203,7 +202,7 @@ test("digits: ", function() {
 
 test("date: ", function() {
 	expect( 6 );
-	
+
 	var form = $('#testFormDate');
 	var v = $(form).validarium()[0];
 	form.find('input').val('aaweraw');
@@ -222,7 +221,7 @@ test("date: ", function() {
 
 test("dateISO: ", function() {
 	expect( 7 );
-	
+
 	var form = $('#testFormDateISO');
 	var v = $(form).validarium()[0];
 	form.find('input').val('aaweraw');

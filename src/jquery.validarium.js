@@ -55,9 +55,10 @@ $.extend($.validarium, {
 		debug: false, /// if true, print
 		errorClass: "error", /// class added to invalid elements.
 		validClass: "valid", /// class added to valid elements.
-		errorElement: "label", /// TODO element used to display the error message
-		focusInvalid: true, /// if true, focus
-		onsubmit: true,
+		errorElement: "label", /// element used to display the error message
+		focusInvalid: true, /// if true, focus on element when there is an error
+		onsubmit: true, /// TODO
+		submitCallback: null,
 		ignore: ":hidden"
 	},
 
@@ -116,10 +117,19 @@ $.extend($.validarium, {
 		init: function() {
 			var self = this;
 
-			this.currentForm.delegate(":submit", "click", function(){
-				alert('submit');
-				self.form("onsubmit");
-				return false;
+			this.currentForm.delegate(":submit", "click", function(event){
+				if (self.settings.debug) {
+					// prevent form submit to be able to see console output
+					event.preventDefault();
+				}
+
+				var valid = self.form("onsubmit");
+
+				if (valid && self.settings.submitHandler) {
+					self.settings.submitHandler.call(self, self.currentForm, event);
+				}
+
+				return valid;
 			});
 
 			this.currentForm
@@ -194,6 +204,7 @@ $.extend($.validarium, {
 				if (!valid) {
 					firstinvalid = element;
 				}
+				retval &= valid;
 			});
 
 			if (eventtype == "onsubmit" && self.settings.focusInvalid && firstinvalid) {
@@ -253,12 +264,12 @@ $.extend($.validarium, {
 			switch (eventtype) {
 			case undefined:
 			case null:
-			case 'ontype':
-				if (methodname in this.ontype) return this.ontype[methodname];
-			case 'onblur':
-				if (methodname in this.onblur) return this.onblur[methodname];
 			case 'onsubmit':
 				if (methodname in this.onsubmit) return this.onsubmit[methodname];
+			case 'onblur':
+				if (methodname in this.onblur) return this.onblur[methodname];
+			case 'ontype':
+				if (methodname in this.ontype) return this.ontype[methodname];
 			default:
 				return null;
 			}
