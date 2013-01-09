@@ -189,14 +189,13 @@ $.extend($.validarium, {
 				if (name.substr(0, 10) == "data-rules") {
 					var rulename = name.substr(11);
 					var method = self.getMethod(rulename, eventtype);
-					console.log(method, eventtype);
 					if (!method) {
 						continue;
 					}
 					var value = self.elementValue(element);
-					var valid = method.call(self, value, element, rulevalue);
-					self.elementNotify(element, valid, "Error"); // TODO message
-					if (valid == false) {
+					var state = method.call(self, value, element, rulevalue);
+					self.elementNotify(element, rulename, state, "Error"); // TODO message
+					if (state == false) {
 						return false;
 					}
 				}
@@ -223,7 +222,6 @@ $.extend($.validarium, {
 				retval &= valid;
 
 				if (eventtype != 'onalways') {
-					console.log('onalways');
 					valid = self.elementValidate(element, 'onalways');
 					if (!valid) {
 						firstinvalid = element;
@@ -263,24 +261,59 @@ $.extend($.validarium, {
 		/**
 		 *
 		 * @param element The element being checked
-		 * @param valid True if error, false if valid
-		 * @param message
+		 * @param rulename
+		 * @param state one of [true, false, pending, unchecked]
+		 * @param string message The error message, if any.
 		 */
-		elementNotify: function(element, valid, message) {
+		elementNotify: function(element, rulename, state, message) {
 			var errorel = this.elementError(element);
 			var s = this.settings;
+
+			var states = $(element).data('validariumstates');
+			if (states == undefined) {
+				states = [];
+			}
+			states[rulename] = {'state': state, 'message': message};
+			$.data(element, 'validariumstates', states);
+
+			var finalstate = true;
+			for (var r in states) {
+				var o = states[r];
+				switch (o['state']) {
+				case true:
+					// do nothing, this is what we expect. Anything else overrides this.
+					break;
+				case false:
+					if (finalstate == true || finalstate == 'unchecked') {
+						// we don't want to override pending. Wait until it is finished first.
+						finalstate = false;
+					}
+					break;
+				case 'pending':
+					finalstate = 'pending';
+					break;
+				case 'unchecked':
+					break;
+				}
+			}
+
 			$(element).removeClass(s.errorClass + " " + s.validClass + " " + s.pendingClass);
-			if (valid == "pending") {
+			switch (finalstate) {
+			case "pending":
 				$(errorel).html('Validating...').show();
 				$(element).addClass(s.pendingClass);
-			}
-			else if (valid == false) {
+				break;
+			case 'unchecked':
+				// TODO
+				break;
+			case false:
 				$(errorel).html(message).show();
 				$(element).addClass(s.errorClass);
-			}
-			else {
+				break;
+			case true:
 				$(errorel).html('').hide();
 				$(element).addClass(s.validClass);
+				break;
 			}
 		},
 
@@ -335,18 +368,14 @@ $.extend($.validarium, {
 		onalways: {
 			// https://github.com/Corollarium/validarium/wiki/required
 			required: function(value, element, param) {
-				console.log('awerawr');
 				if (param.toLowerCase() != 'true') {
-					console.log('awerawr1');
 					return true;
 				}
 				if (element.nodeName.toLowerCase() === "select" ) {
 					// could be an array for select-multiple or a string, both are fine this way
 					var val = $(element).val();
-					console.log('awerawr2');
 					return val && val.length > 0;
 				}
-				console.log('awerawr3', $.trim(value));
 				return $.trim(value).length > 0;
 			},
 
@@ -474,10 +503,10 @@ $.extend($.validarium, {
 					data: data,
 					url: param['url'],
 					success: function(data) {
-						self.elementNotify(element, true);
+						self.elementNotify(element, 'remote', true);
 					},
 					error: function(data) {
-						self.elementNotify(element, false, self.settings.i18("Invalid value"));
+						self.elementNotify(element, 'remote', false, self.settings.i18("Invalid value"));
 					}
 				}, param));
 				return "pending";
