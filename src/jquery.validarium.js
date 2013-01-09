@@ -38,12 +38,6 @@ $.validarium = function( options, form ) {
 
 	this.currentForm = $(form);
 
-	// TODO: does not handle dynamic forms!
-	this.elements = this.currentForm
-		.find("input, select, textarea")
-		.not(":submit, :reset, :image, [disabled]")
-		.not( this.settings.ignore );
-
 	// Add novalidate tag if HTML5.
 	this.currentForm.attr('novalidate', 'novalidate');
 
@@ -51,15 +45,18 @@ $.validarium = function( options, form ) {
 };
 
 $.extend($.validarium, {
+	callbacktypes: ['ontype', 'onblur', 'onsubmit', 'onalways'],
+
 	defaults: {
 		debug: false, /// if true, print
 		errorClass: "error", /// class added to invalid elements.
 		validClass: "valid", /// class added to valid elements.
+		pendingClass: "pending", /// class added to elements being validated.
 		errorElement: "label", /// element used to display the error message
 		focusInvalid: true, /// if true, focus on element when there is an error
-		onsubmit: true, /// TODO
-		submitCallback: null,
-		ignore: ":hidden"
+		submitHandler: null, /// a function to be called on a submit event.
+		ignore: ":hidden", /// classes to ignore
+		i18n: function(str) { return str; } // function for internationalization
 	},
 
 	/**
@@ -81,9 +78,9 @@ $.extend($.validarium, {
 		name = name.toLowerCase();
 
 		if (eventtype == undefined) {
-			eventtype = 'ontype';
+			eventtype = 'onalways';
 		}
-		else if (!eventtype in ['ontype', 'onblur', 'onsubmit']) {
+		else if (!eventtype in this.callbacktypes) {
 			return false;
 		}
 		$.validarium.prototype[eventtype][name] = callback;
@@ -96,17 +93,16 @@ $.extend($.validarium, {
 	 * @param string name
 	 */
 	removeMethod: function(name, eventtype) {
-		var types = ['ontype', 'onblur', 'onsubmit'];
 		name = name.toLowerCase();
 		if (eventtype == undefined) {
 			var retval = true;
-			for (var i in types) {
-				retval = this.removeMethod(name, types[i]);
+			for (var i in this.callbacktypes) {
+				retval = this.removeMethod(name, this.callbacktypes[i]);
 				if (!retval) break;
 			}
 			return retval;
 		}
-		else if (!eventtype in types) {
+		else if (!eventtype in this.callbacktypes) {
 			return false;
 		}
 		delete $.validarium.prototype[eventtype][name];
@@ -116,6 +112,8 @@ $.extend($.validarium, {
 	prototype: {
 		init: function() {
 			var self = this;
+
+			this.updateElementList();
 
 			this.currentForm.delegate(":submit", "click", function(event){
 				if (self.settings.debug) {
@@ -146,10 +144,10 @@ $.extend($.validarium, {
 				"[type='range'], [type='color'] ",
 				"keyup", function() { self.elementValidate(this, 'ontype'); })
 			.delegate("[type='radio'], [type='checkbox'], select, option", "click",
-				function() { self.elementValidate(this, 'ontype'); });
+				function() { self.elementValidate(this, 'onalways'); self.elementValidate(this, 'ontype'); });
 
 			this.currentForm.delegate('input, select, option, textarea', 'onfocusout',
-				function() { self.elementValidate(this, 'onblur'); });
+				function() { self.elementValidate(this, 'onalways'); self.elementValidate(this, 'onblur'); });
 		},
 
 		settings: {},
@@ -160,6 +158,17 @@ $.extend($.validarium, {
 			if (('debug' in this.settings && this.settings.debug) || $.validarium.defaults.debug) {
 				console.warn("Validarium:" + message);
 			}
+		},
+
+		/**
+		 * Updates the element list. Call this if you have a dynamic form
+		 * and added new elements to it.
+		 */
+		updateElementList: function() {
+			this.elements = this.currentForm
+				.find("input, select, textarea")
+				.not(":submit, :reset, :image, [disabled]")
+				.not( this.settings.ignore );
 		},
 
 		/**
@@ -180,13 +189,14 @@ $.extend($.validarium, {
 				if (name.substr(0, 10) == "data-rules") {
 					var rulename = name.substr(11);
 					var method = self.getMethod(rulename, eventtype);
+					console.log(method, eventtype);
 					if (!method) {
 						continue;
 					}
 					var value = self.elementValue(element);
 					var valid = method.call(self, value, element, rulevalue);
 					self.elementNotify(element, valid, "Error"); // TODO message
-					if (!valid) {
+					if (valid == false) {
 						return false;
 					}
 				}
@@ -211,6 +221,15 @@ $.extend($.validarium, {
 					firstinvalid = element;
 				}
 				retval &= valid;
+
+				if (eventtype != 'onalways') {
+					console.log('onalways');
+					valid = self.elementValidate(element, 'onalways');
+					if (!valid) {
+						firstinvalid = element;
+					}
+					retval &= valid;
+				}
 			});
 
 			if (eventtype == "onsubmit" && self.settings.focusInvalid && firstinvalid) {
@@ -249,13 +268,19 @@ $.extend($.validarium, {
 		 */
 		elementNotify: function(element, valid, message) {
 			var errorel = this.elementError(element);
-			if (!valid) {
+			var s = this.settings;
+			$(element).removeClass(s.errorClass + " " + s.validClass + " " + s.pendingClass);
+			if (valid == "pending") {
+				$(errorel).html('Validating...').show();
+				$(element).addClass(s.pendingClass);
+			}
+			else if (valid == false) {
 				$(errorel).html(message).show();
-				$(element).removeClass(this.settings.validClass).addClass(this.settings.errorClass);
+				$(element).addClass(s.errorClass);
 			}
 			else {
 				$(errorel).html('').hide();
-				$(element).removeClass(this.settings.errorClass).addClass(this.settings.validClass);
+				$(element).addClass(s.validClass);
 			}
 		},
 
@@ -270,6 +295,8 @@ $.extend($.validarium, {
 			switch (eventtype) {
 			case undefined:
 			case null:
+			case 'onalways':
+				if (methodname in this.onalways) return this.onalways[methodname];
 			case 'onsubmit':
 				if (methodname in this.onsubmit) return this.onsubmit[methodname];
 			case 'onblur':
@@ -279,6 +306,7 @@ $.extend($.validarium, {
 			default:
 				return null;
 			}
+			return null;
 		},
 
 		/**
@@ -304,18 +332,21 @@ $.extend($.validarium, {
 		 * Methods that should be called whenever a key is typed (or clicks for some
 		 * elements like select), on blur events or on submit.
 		 */
-		ontype: {
-
+		onalways: {
 			// https://github.com/Corollarium/validarium/wiki/required
 			required: function(value, element, param) {
+				console.log('awerawr');
 				if (param.toLowerCase() != 'true') {
+					console.log('awerawr1');
 					return true;
 				}
 				if (element.nodeName.toLowerCase() === "select" ) {
 					// could be an array for select-multiple or a string, both are fine this way
 					var val = $(element).val();
+					console.log('awerawr2');
 					return val && val.length > 0;
 				}
+				console.log('awerawr3', $.trim(value));
 				return $.trim(value).length > 0;
 			},
 
@@ -400,9 +431,15 @@ $.extend($.validarium, {
 				var match = regex.exec(value);
 				if (!match) { return false; }
 
-				return this.ontype.date(match[2] + '/' + match[3] + '/' + match[1], element, param);
+				return this.onalways.date(match[2] + '/' + match[3] + '/' + match[1], element, param);
 			},
+		},
 
+		/**
+		 * Methods that should be called whenever a key is typed (or clicks for some
+		 * elements like select), on blur events or on submit.
+		 */
+		ontype: {
 			// https://github.com/Corollarium/validarium/wiki/mask
 			mask: function(value, element, param) {
 				// TODO
@@ -413,9 +450,37 @@ $.extend($.validarium, {
 		 * Methods that should be called only on blur events or on submit.
 		 */
 		onblur: {
-
+			/**
+			 *
+			 * @param value
+			 * @param element
+			 * @param string|json param
+			 * @returns {String}
+			 */
 			remote: function(value, element, param) {
-				// TODO
+				var self = this;
+				// parse param. If it is a string, consider it the url.
+				// otherwise it is an object.
+				param = json.decode(param);
+				if (typeof param === 'string') {
+					param['url'] = param;
+				}
+
+				var data = {}; data[element.name] = value;
+				data = $.extend(true, data, ('data' in param ? param['data'] : {}));
+
+				$.ajax($.extend(true, {
+					dataType: "json",
+					data: data,
+					url: param['url'],
+					success: function(data) {
+						self.elementNotify(element, true);
+					},
+					error: function(data) {
+						self.elementNotify(element, false, self.settings.i18("Invalid value"));
+					}
+				}, param));
+				return "pending";
 			}
 		},
 
@@ -423,7 +488,9 @@ $.extend($.validarium, {
 		 * Methods that should be called only on submit or when form() is called.
 		 */
 		onsubmit: {
-
+			remoteonsubmit: function(value, element, param) {
+				return this.onblur.remoteblur(value, element, param);
+			}
 		}
 	}
 });
