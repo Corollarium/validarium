@@ -66,7 +66,7 @@ $.extend($.validarium, {
 	 * @param string name The method name
 	 * @param function callback a function(value, element, param) or function(value, element)
 	 * @param string message
-	 * @param string eventtype
+	 * @param string eventtype One of the event types defined in this.callbacktypes
 	 * @return boolean
 	 */
 	addMethod: function(name, callback, message, eventtype) {
@@ -194,7 +194,7 @@ $.extend($.validarium, {
 					}
 					var value = self.elementValue(element);
 					var state = method.call(self, value, element, rulevalue);
-					self.elementNotify(element, rulename, state, "Error"); // TODO message
+					self.elementNotify(element, rulename, state, "Error"); // TODO customize message
 					if (state == false) {
 						return false;
 					}
@@ -480,6 +480,7 @@ $.extend($.validarium, {
 		 */
 		onblur: {
 			/**
+			 * Remote validation through ajax
 			 *
 			 * @param value
 			 * @param element
@@ -492,7 +493,7 @@ $.extend($.validarium, {
 				// otherwise it is an object.
 				param = json.decode(param);
 				if (typeof param === 'string') {
-					param['url'] = param;
+					param = {'url': param};
 				}
 
 				var data = {}; data[element.name] = value;
@@ -517,6 +518,14 @@ $.extend($.validarium, {
 		 * Methods that should be called only on submit or when form() is called.
 		 */
 		onsubmit: {
+			/**
+			 * Remote validation through ajax
+			 *
+			 * @param value
+			 * @param element
+			 * @param string|json param
+			 * @returns {String}
+			 */
 			remoteonsubmit: function(value, element, param) {
 				return this.onblur.remoteblur(value, element, param);
 			}
