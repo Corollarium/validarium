@@ -245,4 +245,33 @@ test("mask: ", function() {
 });
 
 
+test("remote: ", function() {
+	expect( 2 );
+	stop();
+
+	$.mockjax({
+		url: '/rest/test',
+		contentType: 'text/json',
+		responseTime: 1000,
+		responseText: {
+			status: 'error',
+			message: 'Error validing ajax'
+		}
+	});
+	var form = $('#testFormRemote');
+	var v = $(form).validarium()[0];
+	form.find('input').val('aaweraw');
+	ok( v.form() != true, 'Invalid form' );
+	start();
+/*	$.mockjax({
+		url: '/rest/test',
+		responseTime: 0,
+		responseText: {
+			status: 'success',
+			message: 'Error validing ajax'
+		}
+	});
+	ok( !v.form(), 'Valid form' ); */
+});
+
 // TODO: test submitHandler()

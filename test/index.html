@@ -6,6 +6,7 @@
 	<script src="jquery.js"></script>
 	<script src="qunit/qunit-1.10.0.js"></script>
 	<script src="../src/jquery.validarium.js"></script>
+	<script src="../lib/jquery.mockjax.js"></script>
 	<script src="test.js"></script>
 </head>
 <body>
@@ -100,6 +101,11 @@
 		<form id="testFormMask">
 			<input type="text" name="a" data-rules-mask="true"/>
 		</form>
+		
+		<form id="testFormRemote">
+			<input type="text" name="a" data-rules-remote='{"url": "/rest/test"}'/>
+		</form>
+
 	</div>
 	
 	<div id="qunit"></div>

@@ -237,6 +237,7 @@ $.extend($.validarium, {
 			if (!retval) {
 				this.currentForm.triggerHandler("invalid-form", [this]);
 			}
+			console.log('form');
 			return retval;
 		},
 
@@ -276,26 +277,7 @@ $.extend($.validarium, {
 			states[rulename] = {'state': state, 'message': message};
 			$.data(element, 'validariumstates', states);
 
-			var finalstate = true;
-			for (var r in states) {
-				var o = states[r];
-				switch (o['state']) {
-				case true:
-					// do nothing, this is what we expect. Anything else overrides this.
-					break;
-				case false:
-					if (finalstate == true || finalstate == 'unchecked') {
-						// we don't want to override pending. Wait until it is finished first.
-						finalstate = false;
-					}
-					break;
-				case 'pending':
-					finalstate = 'pending';
-					break;
-				case 'unchecked':
-					break;
-				}
-			}
+			var finalstate = this._stateCalculate(states);
 
 			$(element).removeClass(s.errorClass + " " + s.validClass + " " + s.pendingClass);
 			switch (finalstate) {
@@ -316,6 +298,40 @@ $.extend($.validarium, {
 				break;
 			}
 		},
+
+		/**
+		 * Calculates the current state from an array of states.
+		 *
+		 * @return one of [true, false, 'pending', 'unchecked']
+		 */
+		_stateCalculate: function(states) {
+			var finalstate = true;
+			for (var r in states) {
+				var o = states[r];
+				switch (o['state']) {
+				case true:
+					// do nothing, this is what we expect. Anything else overrides this.
+					break;
+				case false:
+					if (finalstate == true || finalstate == 'unchecked') {
+						// we don't want to override pending. Wait until it is finished first.
+						finalstate = false;
+					}
+					break;
+				case 'pending':
+					finalstate = 'pending';
+					break;
+				case 'unchecked':
+					if (finalstate == true) {
+						finalstate = 'unchecked';
+					}
+					break;
+				}
+			}
+			return finalstate;
+		},
+
+
 
 		/**
 		 * Returns the callback
@@ -491,7 +507,15 @@ $.extend($.validarium, {
 				var self = this;
 				// parse param. If it is a string, consider it the url.
 				// otherwise it is an object.
-				param = json.decode(param);
+				console.log(param);
+				try {
+					param = $.parseJSON(param);
+				}
+				catch (e) {
+					// TODO: message: invalid
+					// self.elementNotify(element, 'remote', false, self.settings.i18("Invalid argument"));
+					return false;
+				}
 				if (typeof param === 'string') {
 					param = {'url': param};
 				}
@@ -510,6 +534,7 @@ $.extend($.validarium, {
 						self.elementNotify(element, 'remote', false, self.settings.i18("Invalid value"));
 					}
 				}, param));
+				console.log('awrawer');
 				return "pending";
 			}
 		},
