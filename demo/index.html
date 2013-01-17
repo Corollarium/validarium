@@ -10,7 +10,6 @@
 	</style>
 	<script src="../lib/jquery-1.8.3.js"></script>
 	<script src="../src/jquery.validarium.js"></script>
-	<script src="test.js"></script>
 </head>
 <body>
 	<h1>
@@ -18,7 +17,7 @@
 	</h1>
 
 	<form id="demo">
-		<label>Required: <input type="text" name="a" data-rules-required="true"/></label>
+		<label>Required: <input type="text" name="a" data-rules-required="true" data-rules-required-message="This fild is mandatory (personalized message)"/></label>
 		<label>Not required: <input type="text" name="b" data-rules-required="false"/></label>
 		
 		<label>Between 3 and 10 characters<input type="text" data-rules-minlength="3" data-rules-maxlength="10"/></label>

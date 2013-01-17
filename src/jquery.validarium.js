@@ -109,6 +109,24 @@ $.extend($.validarium, {
 		return true;
 	},
 
+	messages: {
+		required: "This field is required.",
+		minlength: "Please enter at least {minlength} characters.",
+		maxlength: "Please enter no more than {maxlength} characters.",
+		equalto: "Please enter the same value again.",
+		regexp: "Please fill correct format: {regexp}",
+		min: "Please enter a value greater than or equal to {min}.",
+		max: "Please enter a value less than or equal to {max}.",
+		email: "Please enter a valid email address.",
+		url: "Please enter a valid URL.",
+		number: "Please enter a valid number.",
+		digits: "Please enter only digits.",
+		date: "Please enter a valid date.",
+		dateISO: "Please enter a valid date (ISO).",
+		mask: "Please fill based on mask: {mask}",
+		remote: "Please fix this field.",
+	},
+	
 	prototype: {
 		init: function() {
 			var self = this;
@@ -153,8 +171,6 @@ $.extend($.validarium, {
 
 		settings: {},
 
-		errormessages: {},
-
 		debug: function(message) {
 			if (('debug' in this.settings && this.settings.debug) || $.validarium.defaults.debug) {
 				console.warn("Validarium:" + message);
@@ -195,7 +211,19 @@ $.extend($.validarium, {
 					}
 					var value = self.elementValue(element);
 					var state = method.call(self, value, element, rulevalue);
-					self.elementNotify(element, rulename, state, "Error"); // TODO customize message
+					
+					var errormessage = "Error";
+					if ($(element).attr(name + '-message')) {
+						errormessage = $(element).attr(name + '-message');
+					}
+					else if ($.validarium.messages[rulename]) {
+						errormessage = $.validarium.messages[rulename];
+						token = "{" + rulename + "}";
+						while (errormessage.indexOf(token) != -1) {
+							errormessage = errormessage.replace(token, rulevalue);
+						}
+					}
+					self.elementNotify(element, rulename, state, errormessage); // TODO customize message
 					if (state == false) {
 						return false;
 					}
