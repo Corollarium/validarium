@@ -142,12 +142,13 @@ $.extend($.validarium, {
 				"[type='email'], [type='datetime'], [type='date'], [type='month'], " +
 				"[type='week'], [type='time'], [type='datetime-local'], " +
 				"[type='range'], [type='color'] ",
-				"keyup", function() { self.elementValidate(this, 'ontype'); })
+				"keyup", function() { self.elementValidate(this, 'onalways'); self.elementValidate(this, 'ontype'); })
 			.delegate("[type='radio'], [type='checkbox'], select, option", "click",
 				function() { self.elementValidate(this, 'onalways'); self.elementValidate(this, 'ontype'); });
 
-			this.currentForm.delegate('input, select, option, textarea', 'onfocusout',
-				function() { self.elementValidate(this, 'onalways'); self.elementValidate(this, 'onblur'); });
+			this.currentForm.delegate('input', 'blur',
+				function() {
+				self.elementValidate(this, 'onalways'); self.elementValidate(this, 'onblur'); });
 		},
 
 		settings: {},
@@ -237,7 +238,6 @@ $.extend($.validarium, {
 			if (!retval) {
 				this.currentForm.triggerHandler("invalid-form", [this]);
 			}
-			console.log('form');
 			return retval;
 		},
 
@@ -266,7 +266,7 @@ $.extend($.validarium, {
 		 * @param state one of [true, false, pending, unchecked]
 		 * @param string message The error message, if any.
 		 */
-		elementNotify: function(element, rulename, state, message) {
+		elementNotify: function(element, rulename, newstate, message) {
 			var errorel = this.elementError(element);
 			var s = this.settings;
 
@@ -274,7 +274,7 @@ $.extend($.validarium, {
 			if (states == undefined) {
 				states = [];
 			}
-			states[rulename] = {'state': state, 'message': message};
+			states[rulename] = {'state': newstate, 'message': message};
 			$.data(element, 'validariumstates', states);
 
 			var finalstate = this._stateCalculate(states);
@@ -289,6 +289,7 @@ $.extend($.validarium, {
 				// TODO
 				break;
 			case false:
+				if (!message) message = 'Error';
 				$(errorel).html(message).show();
 				$(element).addClass(s.errorClass);
 				break;
@@ -346,12 +347,16 @@ $.extend($.validarium, {
 			case null:
 			case 'onalways':
 				if (methodname in this.onalways) return this.onalways[methodname];
+				break;
 			case 'onsubmit':
 				if (methodname in this.onsubmit) return this.onsubmit[methodname];
+				break;
 			case 'onblur':
 				if (methodname in this.onblur) return this.onblur[methodname];
+				break;
 			case 'ontype':
 				if (methodname in this.ontype) return this.ontype[methodname];
+				break;
 			default:
 				return null;
 			}
@@ -507,7 +512,6 @@ $.extend($.validarium, {
 				var self = this;
 				// parse param. If it is a string, consider it the url.
 				// otherwise it is an object.
-				console.log(param);
 				try {
 					param = $.parseJSON(param);
 				}
@@ -534,7 +538,6 @@ $.extend($.validarium, {
 						self.elementNotify(element, 'remote', false, self.settings.i18("Invalid value"));
 					}
 				}, param));
-				console.log('awrawer');
 				return "pending";
 			}
 		},
