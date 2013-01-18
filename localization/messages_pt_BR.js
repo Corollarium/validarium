@@ -5,7 +5,7 @@
 
 */
 (function ($) {
-	$.extend($.validator.messages, {
+	$.extend($.validarium.messages, {
 		required: "Este campo &eacute; requerido.",
 		minlength: "Por favor preencha pelo menos {minlength} caracteres.",
 		maxlength: "Por favor preencha at&eacute; {maxlength} caracteres.",

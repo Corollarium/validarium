@@ -274,4 +274,42 @@ test("remote: ", function() {
 	ok( !v.form(), 'Valid form' ); */
 });
 
+
+test("message: ", function() {
+	expect( 7 );
+	var form = $('#testFormRequiredText');
+	$(form).validarium();
+	var input = $(form.find('input[name="a"]'));
+	input.focus(); 	input.blur();
+	ok( $.validarium.messages.required == form.find('.validarium-error').text(), 'Default message input');
+	
+	var form2 = $('#testFormRequiredCheckbox');
+	$(form2).validarium();
+	var checkbox = $(form2.find('input[type=checkbox]'));
+	checkbox.focus(); 	checkbox.blur();
+	ok( $.validarium.messages.required == form2.find('.validarium-error').text(), 'Default message checkbox');
+	
+	$.validarium.messages.required = 'Test';
+	input.focus(); 	input.blur();
+	ok( 'Test' == form.find('.validarium-error').text(), 'Change default message');
+	
+	checkbox.focus(); 	checkbox.blur();
+	ok( 'Test' == form2.find('.validarium-error').text(), 'Change default message checkbox');
+	
+	input.attr('data-rules-required-message', 'Especifc message');
+	input.focus(); 	input.blur();
+	ok( 'Especifc message' == form.find('.validarium-error').text(), 'Especific message');
+
+	checkbox.focus(); 	checkbox.blur();
+	ok( 'Test' == form2.find('.validarium-error').text(), 'Maintain default message checkbox');
+	
+	form = $('#testFormLength');
+	$(form).validarium();
+	input = $(form.find('input'));
+	input.focus(); 	input.blur();
+	var minvalue = input.attr('data-rules-minlength');	
+	ok( $.validarium.messages.minlength.replace("{minlength}", minvalue) == form.find('.validarium-error').text(), 'Customing min message');
+
+});
+
 // TODO: test submitHandler()
