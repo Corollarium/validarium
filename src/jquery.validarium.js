@@ -247,27 +247,27 @@ $.extend($.validarium, {
 			var retval = true;
 			var self = this;
 
-			var firstinvalid = null; // first invalid element, for focus()
+			this.firstinvalid = null; // first invalid element, for focus()
 			this.elements.each(function() {
 				var element = this;
 
 				var valid = self.elementValidate(element, eventtype);
-				if (!valid && !firstinvalid) {
-					firstinvalid = element;
+				if (!valid && !self.firstinvalid) {
+					self.firstinvalid = element;
 				}
 				retval &= valid;
 
 				if (eventtype != 'onalways') {
 					valid = self.elementValidate(element, 'onalways');
-					if (!valid && !firstinvalid) {
-						firstinvalid = element;
+					if (!valid && !self.firstinvalid) {
+						self.firstinvalid = element;
 					}
 					retval &= valid;
 				}
 			});
 
-			if (eventtype == "onsubmit" && self.settings.focusInvalid && firstinvalid) {
-				firstinvalid.focus();
+			if (eventtype == "onsubmit" && self.settings.focusInvalid && self.firstinvalid) {
+				self.firstinvalid.focus();
 			}
 
 			if (!retval) {
