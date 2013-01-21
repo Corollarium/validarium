@@ -54,6 +54,7 @@ $.extend($.validarium, {
 		pendingClass: "pending", /// class added to elements being validated.
 		errorElement: "label", /// element used to display the error message
 		focusInvalid: true, /// if true, focus on element when there is an error
+		invalidHandler: null, /// a function to be called when the form is invalid
 		submitHandler: null, /// a function to be called on a submit event.
 		ignore: ":hidden", /// selectors to ignore
 		noignore: ".noignore", /// selectors to don't ignore in every case
@@ -168,6 +169,10 @@ $.extend($.validarium, {
 			this.currentForm.delegate('input', 'blur',
 				function() {
 				self.elementValidate(this, 'onalways'); self.elementValidate(this, 'onblur'); });
+
+			if (this.settings.invalidHandler) {
+				$(this.currentForm).bind("invalid-form", this.settings.invalidHandler);
+			}
 		},
 
 		settings: {},
