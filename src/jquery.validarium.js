@@ -259,7 +259,7 @@ $.extend($.validarium, {
 
 				if (eventtype != 'onalways') {
 					valid = self.elementValidate(element, 'onalways');
-					if (!valid) {
+					if (!valid && !firstinvalid) {
 						firstinvalid = element;
 					}
 					retval &= valid;
