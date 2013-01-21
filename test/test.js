@@ -343,7 +343,6 @@ test("InvalidHandler and SubmitHandler: ", function() {
 			invalidHandler = true;
 		},
 		submitHandler: function(frm, validarium) {
-			console.log('submitHandler');
 			submitHandler = true;
 		}, 
 	})[0];
@@ -360,6 +359,42 @@ test("InvalidHandler and SubmitHandler: ", function() {
 	form.submit();
 	
 	ok( submitHandler, 'Submit handler called');
-	console.log(invalidHandler, submitHandler);
 });
-// TODO: test submitHandler()
+
+
+test("Focus: ", function() {
+	expect( 12 );
+	
+	var form = $('#testFormFocus');
+	var v = $(form).validarium()[0];
+	
+	form.find('input').focus(function (){
+		$(this).addClass('focus');
+	}).blur(function (){
+		$(this).removeClass('focus');
+	});
+	
+	var f1 = form.find('[name=f1]');
+	var f2 = form.find('[name=f2]');
+	var f3 = form.find('[name=f3]');
+	
+	ok( !v.form(), 'Invalid form' );
+	form.submit();
+	
+	ok(f1.hasClass("focus"), 'First element with focus');
+	ok(!f2.hasClass("focus"), 'Second element without focus');
+	ok(!f3.hasClass("focus"), 'Tird element without focus');
+	
+	f2.val('something');
+	ok( !v.form(), 'Invalid form' );
+	ok(f1.hasClass("focus"), 'First element with focus 2');
+	ok(!f2.hasClass("focus"), 'Second element without focus 2');
+	ok(!f3.hasClass("focus"), 'Tird element without focus 2');
+	
+	f1.val('something');
+	f2.val('');
+	ok( !v.form(), 'Invalid form' );
+	ok(!f1.hasClass("focus"), 'First element without focus');
+	ok(f2.hasClass("focus"), 'Second element with focus');
+	ok(!f3.hasClass("focus"), 'Tird element without focus');
+});
