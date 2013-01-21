@@ -55,7 +55,8 @@ $.extend($.validarium, {
 		errorElement: "label", /// element used to display the error message
 		focusInvalid: true, /// if true, focus on element when there is an error
 		submitHandler: null, /// a function to be called on a submit event.
-		ignore: ":hidden", /// classes to ignore
+		ignore: ":hidden", /// selectors to ignore
+		noignore: ".noignore", /// selectors to don't ignore in every case
 		i18n: function(str) { return str; } // function for internationalization
 	},
 
@@ -185,7 +186,8 @@ $.extend($.validarium, {
 			this.elements = this.currentForm
 				.find("input, select, textarea")
 				.not(":submit, :reset, :image, [disabled]")
-				.not( this.settings.ignore );
+				.not( this.settings.ignore )
+				.add( this.currentForm.find(this.settings.noignore) );
 		},
 
 		/**

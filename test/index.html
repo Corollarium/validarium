@@ -106,8 +106,13 @@
 			<input type="text" name="a" data-rules-remote='{"url": "/rest/test"}'/>
 		</form>
 
-	</div>
+		<form id="testFormIgnore">
+			<input type="text" name="i1" data-rules-required="true" />
+			<input type="text" name="i2" data-rules-required="true" style="display: none;" />
+			<input type="text" name="i3" data-rules-required="true" style="display: none;" class="noignore" />
+		</form>
 	
+	</div>
 	<div id="qunit"></div>
 </body>
 </html>
