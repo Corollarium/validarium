@@ -312,4 +312,22 @@ test("message: ", function() {
 
 });
 
+test("ignore and noignore: ", function() {
+	expect( 8 );
+	
+	var form = $('#testFormIgnore');
+	var v = $(form).validarium()[0];
+	
+	ok( !v.form(), 'All empty' );
+	ok( form.find('[name=i1]').hasClass('error'), 'Empty require visible' );
+	ok( !form.find('[name=i2]').hasClass('error'), 'Empty require invisible' );
+	ok( form.find('[name=i3]').hasClass('error'), 'Empty require invisible but noignore' );
+	
+	form.find('input').val('test');
+	ok( v.form(), 'All empty correct' );
+	ok( !form.find('[name=i1]').hasClass('error'), 'Empty require visible correct' );
+	ok( !form.find('[name=i2]').hasClass('error'), 'Empty require invisible correct' );
+	ok( !form.find('[name=i3]').hasClass('error'), 'Empty require invisible but noignore correct' );
+	
+});
 // TODO: test submitHandler()
