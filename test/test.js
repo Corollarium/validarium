@@ -100,7 +100,7 @@ test("regexp: invalid regexp", function() {
 
 
 test("addMethod: add ", function() {
-	expect( 11 );
+	expect( 12 );
 	ok( !$.validarium.addMethod(null, function(value, element, param) {1;}), 'Invalid name');
 	ok( !$.validarium.addMethod("aaa", null), 'Invalid function');
 
@@ -111,12 +111,14 @@ test("addMethod: add ", function() {
 
 	ret = $.validarium.addMethod("extramethod", function(value, element, param) {
 		return value == 'xxx';
-	});
+	}, 'extramethod message');
 	ok( ret, 'Add method' );
 	ok( !v.form(), 'Invalid form' );
+	ok(form.find('.validarium-error').text() == 'extramethod message', 'Invalid message');
+	
 	form.find('input').val('xxx');
 	ok( v.form(), 'Valid form' );
-
+	
 	// replace and don't set param
 	ret = $.validarium.addMethod("extramethod", function(value, element) {
 		return value == 'yyy';

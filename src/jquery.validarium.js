@@ -75,8 +75,11 @@ $.extend($.validarium, {
 		if (!name || !$.isFunction(callback)) {
 			return false;
 		}
-		// TODO: message
-
+		
+		if (message) {
+			this.messages[name] = message;
+		}
+		
 		name = name.toLowerCase();
 
 		if (eventtype == undefined) {
@@ -106,6 +109,9 @@ $.extend($.validarium, {
 		}
 		else if (!eventtype in this.callbacktypes) {
 			return false;
+		}
+		if (this.messages[name]) {
+			delete this.messages[name];
 		}
 		delete $.validarium.prototype[eventtype][name];
 		return true;
