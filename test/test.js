@@ -46,8 +46,6 @@ test("equalTo(): ", function() {
 	expect( 3 );
 	var form = $('#testFormequalTo');
 	var v = $(form).validarium()[0];
-	console.log($('#equalTopw1'));
-	console.log($('#equalTopw2'));
 	$('#equalTopw1').val('awerawer');
 	ok( !v.form(), 'Invalid form' );
 	$('#equalTopw2').val('zwer');
@@ -282,47 +280,47 @@ test("message: ", function() {
 	var input = $(form.find('input[name="a"]'));
 	input.focus(); 	input.blur();
 	ok( $.validarium.messages.required == form.find('.validarium-error').text(), 'Default message input');
-	
+
 	var form2 = $('#testFormRequiredCheckbox');
 	$(form2).validarium();
 	var checkbox = $(form2.find('input[type=checkbox]'));
 	checkbox.focus(); 	checkbox.blur();
 	ok( $.validarium.messages.required == form2.find('.validarium-error').text(), 'Default message checkbox');
-	
+
 	$.validarium.messages.required = 'Test';
 	input.focus(); 	input.blur();
 	ok( 'Test' == form.find('.validarium-error').text(), 'Change default message');
-	
+
 	checkbox.focus(); 	checkbox.blur();
 	ok( 'Test' == form2.find('.validarium-error').text(), 'Change default message checkbox');
-	
+
 	input.attr('data-rules-required-message', 'Especifc message');
 	input.focus(); 	input.blur();
 	ok( 'Especifc message' == form.find('.validarium-error').text(), 'Especific message');
 
 	checkbox.focus(); 	checkbox.blur();
 	ok( 'Test' == form2.find('.validarium-error').text(), 'Maintain default message checkbox');
-	
+
 	form = $('#testFormLength');
 	$(form).validarium();
 	input = $(form.find('input'));
 	input.focus(); 	input.blur();
-	var minvalue = input.attr('data-rules-minlength');	
+	var minvalue = input.attr('data-rules-minlength');
 	ok( $.validarium.messages.minlength.replace("{minlength}", minvalue) == form.find('.validarium-error').text(), 'Customing min message');
 
 });
 
 test("ignore and noignore: ", function() {
 	expect( 8 );
-	
+
 	var form = $('#testFormIgnore');
 	var v = $(form).validarium()[0];
-	
+
 	ok( !v.form(), 'All empty' );
 	ok( form.find('[name=i1]').hasClass('error'), 'Empty require visible' );
 	ok( !form.find('[name=i2]').hasClass('error'), 'Empty require invisible' );
 	ok( form.find('[name=i3]').hasClass('error'), 'Empty require invisible but noignore' );
-	
+
 	form.find('input').val('test');
 	ok( v.form(), 'All empty correct' );
 	ok( !form.find('[name=i1]').hasClass('error'), 'Empty require visible correct' );
@@ -333,49 +331,49 @@ test("ignore and noignore: ", function() {
 
 test("InvalidHandler and SubmitHandler: ", function() {
 	expect( 5 );
-	
+
 	var form = $('#testFormRequiredText');
 	var invalidHandler = false;
 	var submitHandler = false;
-	
+
 	var v = $(form).validarium({
 		invalidHandler: function(frm, validarium) {
 			invalidHandler = true;
 		},
 		submitHandler: function(frm, validarium) {
 			submitHandler = true;
-		}, 
+		},
 	})[0];
-	
+
 	var input = $(form.find('input[name="a"]'));
 	input.val("");
 	ok( !v.form(), 'Invalid form' );
-	
+
 	ok( input.hasClass('error'), 'Error class' );
 	ok( invalidHandler, 'Invalid handler called');
-	
+
 	input.val('awerawer');
 	ok( v.form(), 'Valid form' );
 	form.submit();
-	
+
 	ok( submitHandler, 'Submit handler called');
 });
 
 
 test("InvalidHandlerField: ", function() {
 	expect( 6 );
-	
+
 	var form = $('#testFormFocus');
 	var v = $(form).validarium()[0];
-	
+
 	var qtd = 0;
 	form.find('input').one('invalid-field', function (){
 		qtd++;
 	});
-	
+
 	ok( !v.form(), 'Invalid form' );
 	ok( qtd == 3, 'All indiviual handlers');
-	
+
 	qtd = 0;
 	form.find('[name=f1],[name=f2]').one('invalid-field', function (){
 		qtd++;
@@ -385,47 +383,47 @@ test("InvalidHandlerField: ", function() {
 	ok( !v.form(), 'Invalid form' );
 	ok( f1.hasClass('valid'), 'valid field 1' );
 	ok( form.find('[name=f2]').hasClass('error'), 'invalid field 2' );
-	console.log(qtd)
-	ok( qtd == 1, '1 and 2 Indiviual handlers');
-	
+	ok( qtd == 1, '1 and 2 Individual handlers');
+
 	f1.val('');
 });
 
 
 test("Focus: ", function() {
 	expect( 12 );
-	
+
 	var form = $('#testFormFocus');
 	var v = $(form).validarium()[0];
-	
+
 	form.find('input').focus(function (){
 		$(this).addClass('focus');
 	}).blur(function (){
 		$(this).removeClass('focus');
 	});
-	
+
 	var f1 = form.find('[name=f1]');
 	var f2 = form.find('[name=f2]');
 	var f3 = form.find('[name=f3]');
-	
+
 	ok( !v.form(), 'Invalid form' );
 	form.submit();
-	
+
 	ok(f1.hasClass("focus"), 'First element with focus');
 	ok(!f2.hasClass("focus"), 'Second element without focus');
-	ok(!f3.hasClass("focus"), 'Tird element without focus');
-	
+	ok(!f3.hasClass("focus"), 'Third element without focus');
+
 	f2.val('something');
 	ok( !v.form(), 'Invalid form' );
 	ok(f1.hasClass("focus"), 'First element with focus 2');
 	ok(!f2.hasClass("focus"), 'Second element without focus 2');
-	ok(!f3.hasClass("focus"), 'Tird element without focus 2');
-	
+	ok(!f3.hasClass("focus"), 'Third element without focus 2');
+
 	f1.val('something');
 	f2.val('');
 	ok( !v.form(), 'Invalid form' );
+	form.submit();
 	ok(!f1.hasClass("focus"), 'First element without focus');
 	ok(f2.hasClass("focus"), 'Second element with focus');
-	ok(!f3.hasClass("focus"), 'Tird element without focus');
+	ok(!f3.hasClass("focus"), 'Third element without focus');
 });
 
