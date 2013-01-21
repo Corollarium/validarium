@@ -362,6 +362,36 @@ test("InvalidHandler and SubmitHandler: ", function() {
 });
 
 
+test("InvalidHandlerField: ", function() {
+	expect( 6 );
+	
+	var form = $('#testFormFocus');
+	var v = $(form).validarium()[0];
+	
+	var qtd = 0;
+	form.find('input').one('invalid-field', function (){
+		qtd++;
+	});
+	
+	ok( !v.form(), 'Invalid form' );
+	ok( qtd == 3, 'All indiviual handlers');
+	
+	qtd = 0;
+	form.find('[name=f1],[name=f2]').one('invalid-field', function (){
+		qtd++;
+	});
+	var f1 = form.find('[name=f1]');
+	f1.val('something');
+	ok( !v.form(), 'Invalid form' );
+	ok( f1.hasClass('valid'), 'valid field 1' );
+	ok( form.find('[name=f2]').hasClass('error'), 'invalid field 2' );
+	console.log(qtd)
+	ok( qtd == 1, '1 and 2 Indiviual handlers');
+	
+	f1.val('');
+});
+
+
 test("Focus: ", function() {
 	expect( 12 );
 	
@@ -398,3 +428,4 @@ test("Focus: ", function() {
 	ok(f2.hasClass("focus"), 'Second element with focus');
 	ok(!f3.hasClass("focus"), 'Tird element without focus');
 });
+

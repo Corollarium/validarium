@@ -328,15 +328,13 @@ $.extend($.validarium, {
 				if (!message) message = 'Error';
 				$(errorel).html(message).show();
 				element.addClass(s.errorClass);
+				$(element).triggerHandler("invalid-field", [element, this]);
 				break;
 			case true:
 				$(errorel).html('').hide();
 				element.addClass(s.validClass);
 				break;
 			}
-
-			// TODO: verify if this is the best place to call the trigger.
-			$(element).triggerHandler("invalid-field", [element, newstate, finalstate]);
 		},
 
 		/**
