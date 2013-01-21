@@ -124,9 +124,9 @@ $.extend($.validarium, {
 		date: "Please enter a valid date.",
 		dateISO: "Please enter a valid date (ISO).",
 		mask: "Please fill based on mask: {mask}",
-		remote: "Please fix this field.",
+		remote: "Please fix this field."
 	},
-	
+
 	prototype: {
 		init: function() {
 			var self = this;
@@ -211,7 +211,7 @@ $.extend($.validarium, {
 					}
 					var value = self.elementValue(element);
 					var state = method.call(self, value, element, rulevalue);
-					
+
 					var errormessage = "Error";
 					if ($(element).attr(name + '-message')) {
 						errormessage = $(element).attr(name + '-message');
@@ -510,7 +510,7 @@ $.extend($.validarium, {
 				if (!match) { return false; }
 
 				return this.onalways.date(match[2] + '/' + match[3] + '/' + match[1], element, param);
-			},
+			}
 		},
 
 		/**
