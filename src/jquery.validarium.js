@@ -245,7 +245,7 @@ $.extend($.validarium, {
 				var element = this;
 
 				var valid = self.elementValidate(element, eventtype);
-				if (!valid) {
+				if (!valid && !firstinvalid) {
 					firstinvalid = element;
 				}
 				retval &= valid;
