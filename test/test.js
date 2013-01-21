@@ -328,6 +328,38 @@ test("ignore and noignore: ", function() {
 	ok( !form.find('[name=i1]').hasClass('error'), 'Empty require visible correct' );
 	ok( !form.find('[name=i2]').hasClass('error'), 'Empty require invisible correct' );
 	ok( !form.find('[name=i3]').hasClass('error'), 'Empty require invisible but noignore correct' );
+});
+
+
+test("InvalidHandler and SubmitHandler: ", function() {
+	expect( 5 );
 	
+	var form = $('#testFormRequiredText');
+	var invalidHandler = false;
+	var submitHandler = false;
+	
+	var v = $(form).validarium({
+		invalidHandler: function(frm, validarium) {
+			invalidHandler = true;
+		},
+		submitHandler: function(frm, validarium) {
+			console.log('submitHandler');
+			submitHandler = true;
+		}, 
+	})[0];
+	
+	var input = $(form.find('input[name="a"]'));
+	input.val("");
+	ok( !v.form(), 'Invalid form' );
+	
+	ok( input.hasClass('error'), 'Error class' );
+	ok( invalidHandler, 'Invalid handler called');
+	
+	input.val('awerawer');
+	ok( v.form(), 'Valid form' );
+	form.submit();
+	
+	ok( submitHandler, 'Submit handler called');
+	console.log(invalidHandler, submitHandler);
 });
 // TODO: test submitHandler()
