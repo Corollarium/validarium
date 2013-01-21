@@ -252,22 +252,22 @@ $.extend($.validarium, {
 				var element = this;
 
 				var valid = self.elementValidate(element, eventtype);
-				if (!valid && !this.firstinvalid) {
-					this.firstinvalid = element;
+				if (!valid && !self.firstinvalid) {
+					self.firstinvalid = element;
 				}
 				retval &= valid;
 
 				if (eventtype != 'onalways') {
 					valid = self.elementValidate(element, 'onalways');
-					if (!valid && !this.firstinvalid) {
-						this.firstinvalid = element;
+					if (!valid && !self.firstinvalid) {
+						self.firstinvalid = element;
 					}
 					retval &= valid;
 				}
 			});
 
-			if (eventtype == "onsubmit" && self.settings.focusInvalid && this.firstinvalid) {
-				this.firstinvalid.focus();
+			if (eventtype == "onsubmit" && self.settings.focusInvalid && self.firstinvalid) {
+				self.firstinvalid.focus();
 			}
 
 			if (!retval) {
