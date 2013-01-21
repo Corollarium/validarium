@@ -230,7 +230,7 @@ $.extend($.validarium, {
 							errormessage = errormessage.replace(token, rulevalue);
 						}
 					}
-					self.elementNotify(element, rulename, state, errormessage); // TODO customize message
+					self.elementNotify(element, rulename, state, errormessage);
 					if (state == false) {
 						return false;
 					}
@@ -303,9 +303,10 @@ $.extend($.validarium, {
 		 */
 		elementNotify: function(element, rulename, newstate, message) {
 			var errorel = this.elementError(element);
+			element = $(element);
 			var s = this.settings;
 
-			var states = $(element).data('validariumstates');
+			var states = element.data('validariumstates');
 			if (states == undefined) {
 				states = [];
 			}
@@ -314,11 +315,11 @@ $.extend($.validarium, {
 
 			var finalstate = this._stateCalculate(states);
 
-			$(element).removeClass(s.errorClass + " " + s.validClass + " " + s.pendingClass);
+			element.removeClass(s.errorClass + " " + s.validClass + " " + s.pendingClass);
 			switch (finalstate) {
 			case "pending":
 				$(errorel).html('Validating...').show();
-				$(element).addClass(s.pendingClass);
+				element.addClass(s.pendingClass);
 				break;
 			case 'unchecked':
 				// TODO
@@ -326,13 +327,16 @@ $.extend($.validarium, {
 			case false:
 				if (!message) message = 'Error';
 				$(errorel).html(message).show();
-				$(element).addClass(s.errorClass);
+				element.addClass(s.errorClass);
 				break;
 			case true:
 				$(errorel).html('').hide();
-				$(element).addClass(s.validClass);
+				element.addClass(s.validClass);
 				break;
 			}
+
+			// TODO: verify if this is the best place to call the trigger.
+			$(element).triggerHandler("invalid-field", [element, newstate, finalstate]);
 		},
 
 		/**
