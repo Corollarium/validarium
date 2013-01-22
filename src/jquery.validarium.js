@@ -75,11 +75,11 @@ $.extend($.validarium, {
 		if (!name || !$.isFunction(callback)) {
 			return false;
 		}
-		
+
 		if (message) {
 			this.messages[name] = message;
 		}
-		
+
 		name = name.toLowerCase();
 
 		if (eventtype == undefined) {
@@ -438,7 +438,7 @@ $.extend($.validarium, {
 				if (element.nodeName.toLowerCase() === "select" ) {
 					// could be an array for select-multiple or a string, both are fine this way
 					var val = $(element).val();
-					return val && val.length > 0;
+					return (val != null) && (val.length > 0);
 				}
 				return $.trim(value).length > 0;
 			},
