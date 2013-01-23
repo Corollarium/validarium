@@ -29,7 +29,7 @@ test("required(): select", function() {
 	var form = $('#testFormRequiredOption');
 	var v = $(form).validarium()[0];
 	ok( !v.form(), 'Invalid form' );
-	form.find('select option[value="1"]').attr('selected', 'selected');
+	form.find('select').val('1');
 	ok( v.form(), 'Valid form' );
 });
 
@@ -55,13 +55,15 @@ test("equalTo(): ", function() {
 });
 
 test("minLength: ", function() {
-	expect( 2 );
+	expect( 3 );
 	var form = $('#testFormLength');
 	var v = $(form).validarium()[0];
 	form.find('input').val('a');
 	ok( !v.form(), 'Invalid form' );
 	form.find('input').val('zwer');
 	ok( v.form(), 'Valid form' );
+	form.find('input').val('');
+	ok( !v.form(), 'invalid form' );
 });
 
 test("maxLength: ", function() {
@@ -72,10 +74,11 @@ test("maxLength: ", function() {
 	ok( !v.form(), 'Invalid form' );
 	form.find('input').val('zwer');
 	ok( v.form(), 'Valid form' );
+	//TODO test empty
 });
 
 test("regexp: ", function() {
-	expect( 4 );
+	expect( 5 );
 	var form = $('#testFormRegexp');
 	var v = $(form).validarium()[0];
 	form.find('#regexnoflags').val('az');
@@ -88,6 +91,8 @@ test("regexp: ", function() {
 	ok( v.form(), 'Valid form' );
 	form.find('#regexnoflags').val('ZWE93');
 	ok( !v.form(), 'Invalid form' );
+	form.find('input').val('');
+	ok( v.form(), 'Valid form' );	//TODO confirm if empty value is valid or not
 });
 
 test("regexp: invalid regexp", function() {
@@ -135,49 +140,57 @@ test("addMethod: add ", function() {
 });
 
 test("min: ", function() {
-	expect( 2 );
+	expect( 3 );
 	var form = $('#testFormMinMax');
 	var v = $(form).validarium()[0];
 	form.find('input').val('2');
 	ok( !v.form(), 'Invalid form' );
 	form.find('input').val('6');
 	ok( v.form(), 'Valid form' );
+	form.find('input').val('');
+	ok( v.form(), 'Valid form' );
 });
 
 test("max: ", function() {
-	expect( 2 );
+	expect( 3 );
 	var form = $('#testFormMinMax');
 	var v = $(form).validarium()[0];
 	form.find('input').val('2323');
 	ok( !v.form(), 'Invalid form' );
 	form.find('input').val('6');
 	ok( v.form(), 'Valid form' );
+	form.find('input').val('');
+	ok( v.form(), 'Valid form' );
 });
 
 test("email: ", function() {
-	expect( 2 );
+	expect( 3 );
 	var form = $('#testFormEmail');
 	var v = $(form).validarium()[0];
 	form.find('input').val('aaweraw');
 	ok( !v.form(), 'Invalid form' );
 	form.find('input').val('zwer@corollarium.com');
 	ok( v.form(), 'Valid form' );
+	form.find('input').val('');
+	ok( v.form(), 'Valid form' );
 });
 
 test("url: ", function() {
-	expect( 2 );
+	expect( 3 );
 	var form = $('#testFormUrl');
 	var v = $(form).validarium()[0];
 	form.find('input').val('asfawer');
 	ok( !v.form(), 'Invalid form' );
 	form.find('input').val('http://www.corollarium.com');
 	ok( v.form(), 'Valid form' );
+	form.find('input').val('');
+	ok( v.form(), 'Valid form' );
 /*	form.find('input').val('www.corollarium.com');
 	ok( v.form(), 'Valid form' ); */
 });
 
 test("number: ", function() {
-	expect( 3 );
+	expect( 4 );
 	var form = $('#testFormNumber');
 	var v = $(form).validarium()[0];
 	form.find('input').val('aaweraw');
@@ -186,10 +199,12 @@ test("number: ", function() {
 	ok( v.form(), 'Valid form' );
 	form.find('input').val('-234234.321');
 	ok( v.form(), 'Valid form' );
+	form.find('input').val('');
+	ok( v.form(), 'Valid form' );
 });
 
 test("digits: ", function() {
-	expect( 3 );
+	expect( 4 );
 	var form = $('#testFormDigits');
 	var v = $(form).validarium()[0];
 	form.find('input').val('aaweraw');
@@ -198,10 +213,12 @@ test("digits: ", function() {
 	ok( v.form(), 'Valid form' );
 	form.find('input').val('-234234.321');
 	ok( !v.form(), 'Invalid form' );
+	form.find('input').val('');
+	ok( v.form(), 'Valid form' );
 });
 
 test("date: ", function() {
-	expect( 6 );
+	expect( 7 );
 
 	var form = $('#testFormDate');
 	var v = $(form).validarium()[0];
@@ -210,17 +227,19 @@ test("date: ", function() {
 	form.find('input').val('02/20/2012');
 	ok( v.form(), 'Valid form' );
 	form.find('input').val('02-29-2012');
-	ok( v.form(), 'Valid form' );
+	ok( v.form(), 'Valid date 02-29-2012' );
 	form.find('input').val('02.30.2013');
-	ok( v.form(), 'Valid form' );
+	ok( !v.form(), 'Invalid date 02.30.2013' );
 	form.find('input').val('02|30|2013');
-	ok( !v.form(), 'Invalid form' );
+	ok( !v.form(), 'Invalid date 02|30|2013' );
 	form.find('input').val('20/20/2020');
-	ok( !v.form(), 'Invalid form' );
+	ok( !v.form(), 'Invalid date 20/20/2020' );
+	form.find('input').val('');
+	ok( v.form(), 'Valid form' );
 });
 
 test("dateISO: ", function() {
-	expect( 7 );
+	expect( 8 );
 
 	var form = $('#testFormDateISO');
 	var v = $(form).validarium()[0];
@@ -238,6 +257,8 @@ test("dateISO: ", function() {
 	ok( v.form(), 'Valid form' );
 	form.find('input').val('2013|02|30');
 	ok( !v.form(), 'Invalid form' );
+	form.find('input').val('');
+	ok( v.form(), 'Valid form' );
 });
 
 test("mask: ", function() {
