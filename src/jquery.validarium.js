@@ -242,7 +242,7 @@ $.extend($.validarium, {
 					}
 				}
 			}
-			return true;
+			return $(element).hasClass('valid');
 		},
 
 		/**
