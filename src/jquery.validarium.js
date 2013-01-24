@@ -211,6 +211,7 @@ $.extend($.validarium, {
 		elementValidate: function(element, eventtype) {
 			var self = this;
 			var attributes = element.attributes;
+			var finalstate = true;
 
 			for (var i = 0; i < attributes.length; i++) {
 				var name = attributes.item(i).nodeName.toLowerCase();
@@ -236,13 +237,13 @@ $.extend($.validarium, {
 							errormessage = errormessage.replace(token, rulevalue);
 						}
 					}
-					self.elementNotify(element, rulename, state, errormessage);
+					finalstate = self.elementNotify(element, rulename, state, errormessage);
 					if (state == false) {
-						return false;
+						// return false;
 					}
 				}
 			}
-			return $(element).hasClass('valid');
+			return finalstate; // $(element).hasClass('valid');
 		},
 
 		/**
@@ -341,6 +342,7 @@ $.extend($.validarium, {
 				element.addClass(s.validClass);
 				break;
 			}
+			return finalstate;
 		},
 
 		/**
