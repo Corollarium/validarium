@@ -226,8 +226,10 @@ test("date: ", function() {
 	ok( !v.form(), 'Invalid form' );
 	form.find('input').val('02/20/2012');
 	ok( v.form(), 'Valid form' );
-	form.find('input').val('02-29-2012');
+	form.find('input').val('02/29/2012');
 	ok( v.form(), 'Valid date 02-29-2012' );
+	form.find('input').val('02-01-2012');
+	ok( !v.form(), 'Invalid date 02-01-2012');
 	form.find('input').val('02.30.2013');
 	ok( !v.form(), 'Invalid date 02.30.2013' );
 	form.find('input').val('02|30|2013');
