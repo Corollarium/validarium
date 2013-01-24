@@ -211,7 +211,6 @@ $.extend($.validarium, {
 		elementValidate: function(element, eventtype) {
 			var self = this;
 			var attributes = element.attributes;
-			var retval = true;
 
 			for (var i = 0; i < attributes.length; i++) {
 				var name = attributes.item(i).nodeName.toLowerCase();
@@ -237,8 +236,8 @@ $.extend($.validarium, {
 							errormessage = errormessage.replace(token, rulevalue);
 						}
 					}
-					finalstate = self.elementNotify(element, rulename, state, errormessage);
-					if (finalstate == true) {
+					self.elementNotify(element, rulename, state, errormessage);
+					if (state == false) {
 						return false;
 					}
 				}
@@ -342,7 +341,6 @@ $.extend($.validarium, {
 				element.addClass(s.validClass);
 				break;
 			}
-			return finalstate;
 		},
 
 		/**
@@ -462,6 +460,9 @@ $.extend($.validarium, {
 
 			// https://github.com/Corollarium/validarium/wiki/regexp
 			regexp: function(value, element, param) {
+				if (!value) {
+					return true; // If you need a false here, add "required" as well
+				}
 				try {
 					var flags = $(element).attr('data-rules-regexp-flags');
 					var grep = new RegExp(param, flags); // TODO: escaping?

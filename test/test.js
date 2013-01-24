@@ -92,7 +92,7 @@ test("regexp: ", function() {
 	form.find('#regexnoflags').val('ZWE93');
 	ok( !v.form(), 'Invalid form' );
 	form.find('input').val('');
-	ok( v.form(), 'Valid form' );	//TODO confirm if empty value is valid or not
+	ok( v.form(), 'Invalid form' );
 });
 
 test("regexp: invalid regexp", function() {
