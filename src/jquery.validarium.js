@@ -571,8 +571,8 @@ $.extend($.validarium, {
 		 */
 		ontype: {
 			// https://github.com/Corollarium/validarium/wiki/mask
-			mask: function(value, element, param) {
-				// TODO
+			inputmask: function(value, element, param) {
+				return $(element).inputmask('isComplete');
 			}
 		},
 
@@ -612,11 +612,9 @@ $.extend($.validarium, {
 					data: data,
 					url: param['url'],
 					success: function(data) {
-						console.log('sucess: ', data);
 						self.elementNotify(element, 'remote', true);
 					},
 					error: function(data) {
-						console.log('error: ', data);
 						self.elementNotify(element, 'remote', false, self.settings.i18("Invalid value"));
 					}
 				}, param));
