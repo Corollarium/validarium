@@ -518,7 +518,26 @@ $.extend($.validarium, {
 			 * https://github.com/Corollarium/validarium/wiki/date
 			 */
 			date: function(value, element, param) {
-				 return !value || !/Invalid|NaN/.test(new Date(value).toString());
+				var d = new Date(value);
+				var pieces = value.split('/');
+				if (!value) {
+					return true;
+				}
+				else if (/Invalid|NaN/.test(d.toString())) {
+					return false;
+				}
+				
+			    if (pieces.length !== 3) {
+			        return false;
+			    }
+
+			    var month = parseInt(pieces[0], 10);
+			    var day = parseInt(pieces[1], 10);
+			    var year = parseInt(pieces[2], 10);
+				if ((d.getMonth()+1 != month) || (d.getDate() != day) || (d.getFullYear()!= year)) {
+					return false;
+				}
+				return true;
 			},
 
 			/**

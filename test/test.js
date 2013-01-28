@@ -218,7 +218,7 @@ test("digits: ", function() {
 });
 
 test("date: ", function() {
-	expect( 7 );
+	expect( 8 );
 
 	var form = $('#testFormDate');
 	var v = $(form).validarium()[0];
@@ -256,7 +256,7 @@ test("dateISO: ", function() {
 	form.find('input').val('2012-02-29');
 	ok( v.form(), 'Valid form' );
 	form.find('input').val('2013.02.30');
-	ok( v.form(), 'Valid form' );
+	ok( !v.form(), 'Invalid form' );
 	form.find('input').val('2013|02|30');
 	ok( !v.form(), 'Invalid form' );
 	form.find('input').val('');
@@ -310,28 +310,30 @@ test("message: ", function() {
 	$(form2).validarium();
 	var checkbox = $(form2.find('input[type=checkbox]'));
 	checkbox.focus(); 	checkbox.blur();
-	ok( $.validarium.messages.required == form2.find('.validarium-error').text(), 'Default message checkbox');
+	equal( $.validarium.messages.required, form2.find('.validarium-error').text(), 'Default message checkbox');
 
 	$.validarium.messages.required = 'Test';
 	input.focus(); 	input.blur();
-	ok( 'Test' == form.find('.validarium-error').text(), 'Change default message');
+	equal( 'Test', form.find('.validarium-error').text(), 'Change default message');
 
 	checkbox.focus(); 	checkbox.blur();
-	ok( 'Test' == form2.find('.validarium-error').text(), 'Change default message checkbox');
+	equal( 'Test', form2.find('.validarium-error').text(), 'Change default message checkbox');
 
-	input.attr('data-rules-required-message', 'Especifc message');
+	input.attr('data-rules-required-message', 'Specific message');
 	input.focus(); 	input.blur();
-	ok( 'Especifc message' == form.find('.validarium-error').text(), 'Especific message');
+	equal( 'Specific message', form.find('.validarium-error').text(), 'Especific message');
 
 	checkbox.focus(); 	checkbox.blur();
-	ok( 'Test' == form2.find('.validarium-error').text(), 'Maintain default message checkbox');
+	equal( 'Test', form2.find('.validarium-error').text(), 'Maintain default message checkbox');
 
 	form = $('#testFormLength');
 	$(form).validarium();
 	input = $(form.find('input'));
 	input.focus(); 	input.blur();
 	var minvalue = input.attr('data-rules-minlength');
-	ok( $.validarium.messages.minlength.replace("{minlength}", minvalue) == form.find('.validarium-error').text(), 'Customing min message');
+	var expected = $.validarium.messages.minlength.replace("{minlength}", minvalue);
+	var found = form.find('.validarium-error').text();
+	equal( expected, found, 'Customizing min message');
 
 });
 
@@ -408,7 +410,7 @@ test("InvalidHandlerField: ", function() {
 	ok( !v.form(), 'Invalid form' );
 	ok( f1.hasClass('valid'), 'valid field 1' );
 	ok( form.find('[name=f2]').hasClass('error'), 'invalid field 2' );
-	ok( qtd == 1, '1 and 2 Individual handlers');
+	equal( qtd, 1, '1 and 2 Individual handlers');
 
 	f1.val('');
 });
