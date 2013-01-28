@@ -276,6 +276,7 @@ test("remote: ", function() {
 		url: '/rest/test',
 		contentType: 'text/json',
 		responseTime: 1000,
+		status: 404,
 		responseText: {
 			status: 'error',
 			message: 'Error validing ajax'

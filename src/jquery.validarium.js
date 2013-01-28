@@ -238,12 +238,9 @@ $.extend($.validarium, {
 						}
 					}
 					finalstate = self.elementNotify(element, rulename, state, errormessage);
-					if (state == false) {
-						// return false;
-					}
 				}
 			}
-			return finalstate; // $(element).hasClass('valid');
+			return finalstate;
 		},
 
 		/**
@@ -259,6 +256,7 @@ $.extend($.validarium, {
 				var element = this;
 
 				var valid = self.elementValidate(element, eventtype);
+				console.log(valid, element, eventtype);
 				if (valid != true) {
 					if (!self.firstinvalid) {
 						self.firstinvalid = element;
@@ -281,6 +279,7 @@ $.extend($.validarium, {
 				self.firstinvalid.focus();
 			}
 
+			
 			if (retval == false) {
 				this.currentForm.triggerHandler("invalid-form", [this]);
 			}
@@ -612,12 +611,10 @@ $.extend($.validarium, {
 					data: data,
 					url: param['url'],
 					success: function(data) {
-						console.log('sucess: ', data);
 						self.elementNotify(element, 'remote', true);
 					},
 					error: function(data) {
-						console.log('error: ', data);
-						self.elementNotify(element, 'remote', false, self.settings.i18("Invalid value"));
+						self.elementNotify(element, 'remote', false, $.validarium.messages.remote);
 					}
 				}, param));
 				return "pending";
