@@ -52,7 +52,7 @@ $.extend($.validarium, {
 		errorClass: "error", /// class added to invalid elements.
 		validClass: "valid", /// class added to valid elements.
 		pendingClass: "pending", /// class added to elements being validated.
-		errorElement: "label", /// element used to display the error message
+		errorElement: "ul", /// element used to display the error message
 		focusInvalid: true, /// if true, focus on element when there is an error
 		invalidHandler: null, /// a function to be called when the form is invalid
 		submitHandler: null, /// a function to be called on a submit event.
@@ -323,11 +323,11 @@ $.extend($.validarium, {
 			}
 			states[rulename] = {'state': newstate, 'message': message};
 			element.data('validariumstates', states);
-
+			
 			var finalstate = this._stateCalculate(states);
 
 			element.removeClass(s.errorClass + " " + s.validClass + " " + s.pendingClass);
-			switch (finalstate) {
+			switch (newstate) {
 			case "pending":
 				$(errorel).html('Validating...').show();
 				element.addClass(s.pendingClass);
@@ -337,13 +337,22 @@ $.extend($.validarium, {
 				break;
 			case false:
 				if (!message) message = 'Error';
-				$(errorel).html(message).show();
+				if (!$(errorel).children('li[data-rule=' + rulename + ']').length) {
+					$(errorel).append('<li data-rule="' + rulename + '">' + message + '</li>');
+				}
+				else {
+					$(errorel).children('li[data-rule=' + rulename + ']').html(message);
+				}
+				$(errorel).show();
 				element.addClass(s.errorClass);
 				$(element).triggerHandler("invalid-field", [element, this]);
 				break;
 			case true:
-				$(errorel).html('').hide();
-				element.addClass(s.validClass);
+				$(errorel).find('[data-rule=' + rulename + ']').remove();
+				if (!$(errorel).children().length) {
+					$(errorel).hide();
+					element.addClass(s.validClass);
+				}
 				break;
 			}
 			return finalstate;
@@ -603,9 +612,11 @@ $.extend($.validarium, {
 					data: data,
 					url: param['url'],
 					success: function(data) {
+						console.log('sucess: ', data);
 						self.elementNotify(element, 'remote', true);
 					},
 					error: function(data) {
+						console.log('error: ', data);
 						self.elementNotify(element, 'remote', false, self.settings.i18("Invalid value"));
 					}
 				}, param));

@@ -270,7 +270,7 @@ test("mask: ", function() {
 
 test("remote: ", function() {
 	expect( 2 );
-	stop();
+	//stop();
 
 	$.mockjax({
 		url: '/rest/test',
@@ -282,10 +282,12 @@ test("remote: ", function() {
 		}
 	});
 	var form = $('#testFormRemote');
+	var input = form.find('input');
 	var v = $(form).validarium()[0];
-	form.find('input').val('aaweraw');
-	ok( v.form() != true, 'Invalid form' );
-	start();
+	input.val('aaweraw');
+	input.focus(); 	input.blur();
+	ok( !v.form("onsubmit"), 'Invalid form' );
+	//start();
 /*	$.mockjax({
 		url: '/rest/test',
 		responseTime: 0,
@@ -304,7 +306,7 @@ test("message: ", function() {
 	$(form).validarium();
 	var input = $(form.find('input[name="a"]'));
 	input.focus(); 	input.blur();
-	ok( $.validarium.messages.required == form.find('.validarium-error').text(), 'Default message input');
+	equal( $.validarium.messages.required, form.find('.validarium-error').text(), 'Default message input');
 
 	var form2 = $('#testFormRequiredCheckbox');
 	$(form2).validarium();
