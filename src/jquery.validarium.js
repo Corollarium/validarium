@@ -256,7 +256,6 @@ $.extend($.validarium, {
 				var element = this;
 
 				var valid = self.elementValidate(element, eventtype);
-				console.log(valid, element, eventtype);
 				if (valid != true) {
 					if (!self.firstinvalid) {
 						self.firstinvalid = element;
@@ -570,8 +569,8 @@ $.extend($.validarium, {
 		 */
 		ontype: {
 			// https://github.com/Corollarium/validarium/wiki/mask
-			mask: function(value, element, param) {
-				// TODO
+			inputmask: function(value, element, param) {
+				return $(element).inputmask('isComplete');
 			}
 		},
 
