@@ -259,17 +259,21 @@ $.extend($.validarium, {
 				var element = this;
 
 				var valid = self.elementValidate(element, eventtype);
-				if (!valid && !self.firstinvalid) {
-					self.firstinvalid = element;
+				if (valid != true) {
+					if (!self.firstinvalid) {
+						self.firstinvalid = element;
+					}
+					retval = false;
 				}
-				retval &= valid;
 
 				if (eventtype != 'onalways') {
 					valid = self.elementValidate(element, 'onalways');
-					if (!valid && !self.firstinvalid) {
-						self.firstinvalid = element;
+					if (valid != true) {
+						if (!self.firstinvalid) {
+							self.firstinvalid = element;
+						}
+						retval = false;
 					}
-					retval &= valid;
 				}
 			});
 
@@ -277,7 +281,7 @@ $.extend($.validarium, {
 				self.firstinvalid.focus();
 			}
 
-			if (!retval) {
+			if (retval == false) {
 				this.currentForm.triggerHandler("invalid-form", [this]);
 			}
 			return retval;
@@ -318,7 +322,7 @@ $.extend($.validarium, {
 				states = [];
 			}
 			states[rulename] = {'state': newstate, 'message': message};
-			$.data(element, 'validariumstates', states);
+			element.data('validariumstates', states);
 
 			var finalstate = this._stateCalculate(states);
 
