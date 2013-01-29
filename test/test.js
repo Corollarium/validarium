@@ -269,9 +269,8 @@ test("mask: ", function() {
 
 
 test("remote: ", function() {
-	expect( 2 );
-	//stop();
-
+	expect(4);
+	start();
 	$.mockjax({
 		url: '/rest/test',
 		contentType: 'text/json',
@@ -287,17 +286,27 @@ test("remote: ", function() {
 	var v = $(form).validarium()[0];
 	input.val('aaweraw');
 	input.focus(); 	input.blur();
-	ok( !v.form("onsubmit"), 'Invalid form' );
-	//start();
-/*	$.mockjax({
-		url: '/rest/test',
-		responseTime: 0,
+	ok( !v.form(), 'Invalid form before ajax request' );
+	stop();
+	
+	ok( !v.form(), 'Invalid form after ajax request' );
+	
+	start();
+	$.mockjax({
+		url: '/rest/testok',
+		contentType: 'text/json',
+		responseTime: 1000,
+		status: 200,
 		responseText: {
 			status: 'success',
-			message: 'Error validing ajax'
+			message: 'Validing ajax'
 		}
 	});
-	ok( !v.form(), 'Valid form' ); */
+	input.attr('data-rules-remote', '{"url": "/rest/testok"}');
+	input.focus(); 	input.blur();
+	ok( !v.form(), 'Valid form before ajax request' );
+	stop();
+	ok( v.form(), 'Valid form after ajax request' );
 });
 
 

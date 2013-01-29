@@ -211,7 +211,7 @@ $.extend($.validarium, {
 		elementValidate: function(element, eventtype) {
 			var self = this;
 			var attributes = element.attributes;
-			var finalstate = true;
+			var finalstate = this._stateCalculate(this.getStates(element));
 
 			for (var i = 0; i < attributes.length; i++) {
 				var name = attributes.item(i).nodeName.toLowerCase();
@@ -225,7 +225,7 @@ $.extend($.validarium, {
 					}
 					var value = self.elementValue(element);
 					var state = method.call(self, value, element, rulevalue);
-
+					
 					var errormessage = "Error";
 					if ($(element).attr(name + '-message')) {
 						errormessage = $(element).attr(name + '-message');
@@ -237,6 +237,7 @@ $.extend($.validarium, {
 							errormessage = errormessage.replace(token, rulevalue);
 						}
 					}
+					
 					finalstate = self.elementNotify(element, rulename, state, errormessage);
 				}
 			}
@@ -315,15 +316,12 @@ $.extend($.validarium, {
 			element = $(element);
 			var s = this.settings;
 
-			var states = element.data('validariumstates');
-			if (states == undefined) {
-				states = [];
-			}
+			var states = this.getStates(element);
 			states[rulename] = {'state': newstate, 'message': message};
 			element.data('validariumstates', states);
 			
 			var finalstate = this._stateCalculate(states);
-
+			
 			element.removeClass(s.errorClass + " " + s.validClass + " " + s.pendingClass);
 			switch (newstate) {
 			case "pending":
@@ -388,7 +386,19 @@ $.extend($.validarium, {
 			return finalstate;
 		},
 
-
+		/**
+		 * Returns the state for an element
+		 * 
+		 * @param element
+		 * @returns The current state from an array of states
+		 */
+		getStates: function (element) {
+			var states = $(element).data('validariumstates');
+			if (states == undefined) {
+				states = [];
+			}
+			return states;
+		},
 
 		/**
 		 * Returns the callback
