@@ -268,13 +268,12 @@ test("mask: ", function() {
 });
 
 
-test("remote: ", function() {
-	expect(4);
-	start();
+test("remote: false", function() {
+	expect(2);
 	$.mockjax({
 		url: '/rest/test',
 		contentType: 'text/json',
-		responseTime: 1000,
+		responseTime: 300,
 		status: 404,
 		responseText: {
 			status: 'error',
@@ -288,25 +287,40 @@ test("remote: ", function() {
 	input.focus(); 	input.blur();
 	ok( !v.form(), 'Invalid form before ajax request' );
 	stop();
-	
-	ok( !v.form(), 'Invalid form after ajax request' );
-	
-	start();
+
+	setTimeout(function() {
+		start();
+		ok( !v.form(), 'Invalid form after ajax request' );
+	}, 500);
+});
+
+
+test("remote: true", function() {
+	expect(2);
 	$.mockjax({
 		url: '/rest/testok',
 		contentType: 'text/json',
-		responseTime: 1000,
+		responseTime: 300,
 		status: 200,
 		responseText: {
 			status: 'success',
 			message: 'Validing ajax'
 		}
 	});
+	var form = $('#testFormRemote');
+	var input = form.find('input');
+	var v = $(form).validarium()[0];
+	input.val('aaweraw');
+	input.focus(); 	input.blur();
 	input.attr('data-rules-remote', '{"url": "/rest/testok"}');
 	input.focus(); 	input.blur();
 	ok( !v.form(), 'Valid form before ajax request' );
+
+	setTimeout(function() {
+		start();
+		ok( v.form(), 'Valid form after ajax request' );
+	}, 500);
 	stop();
-	ok( v.form(), 'Valid form after ajax request' );
 });
 
 
