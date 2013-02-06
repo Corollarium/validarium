@@ -129,8 +129,10 @@ $.extend($.validarium, {
 		url: "Please enter a valid URL.",
 		number: "Please enter a valid number.",
 		digits: "Please enter only digits.",
+		time: "Please enter a valid time",
 		date: "Please enter a valid date.",
-		dateISO: "Please enter a valid date (ISO).",
+		dateiso: "Please enter a valid date (ISO).",
+		datetime: "Please enter a valid datetime",
 		mask: "Please fill based on mask: {mask}",
 		remote: "Please fix this field."
 	},
@@ -529,6 +531,28 @@ $.extend($.validarium, {
 			digits: function(value, element, param) {
 				return !value ||/^\d+$/.test(value);
 			},
+			
+			/**
+			 * Valid a time where hour and minutes are mandatory, seconds and miliseconds are optional
+			 * Format: hour:minute:second:milisecond or hour:minute:second.milisecond 
+			 */
+			time: function (value, element, param) {
+				if (!value) return true;
+				
+				// regular expression to match required time format
+			    re = /^(\d{1,2}):(\d{2})(:(\d{2})([:|\.](\d{1,4}))?)?$/;
+			    if (pieces = value.match(re)) {
+			    	var hour = parseInt(pieces[1], 10);
+				    var min = parseInt(pieces[2], 10);
+				    var sec = 0;
+				    if (pieces[4]) {
+				    	sec = parseInt(pieces[4], 10);
+				    }
+				    
+					return (hour >= 0 && hour < 24 && min >= 0 && min < 60 && sec >= 0 && sec < 60);       
+			    }
+		        return false;
+			},
 
 			/**
 			 * Checks if it is a valid date.
@@ -569,7 +593,22 @@ $.extend($.validarium, {
 				var match = regex.exec(value);
 				if (!match) { return false; }
 
-				return this.onalways.date(match[2] + '/' + match[3] + '/' + match[1], element, param);
+				return $.validarium.prototype.onalways.date(match[2] + '/' + match[3] + '/' + match[1], element, param);
+			},
+			
+			/***
+			 * Validate a datetime in format yy/mm/dd timeformat
+			 */
+			datetime: function (value, element, param) {
+				if (!value) return true;
+				if (value.indexOf(' ') == -1) return false;
+				
+				var parts = value.split(" ");
+				if (parts.length != 2) return false;
+				if ((parts[0] && !parts[1]) || (!parts[0] && parts[1])) return false;
+				
+				var self = $.validarium.prototype.onalways;
+				return self.dateiso(parts[0], element, param) && self.time(parts[1], element, param); 
 			}
 		},
 
@@ -643,7 +682,7 @@ $.extend($.validarium, {
 			 * @returns {String}
 			 */
 			remoteonsubmit: function(value, element, param) {
-				return this.onblur.remoteblur(value, element, param);
+				return $.validarium.prototype.onblur.remoteblur(value, element, param);
 			}
 		}
 	}
