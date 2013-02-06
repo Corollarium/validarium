@@ -325,9 +325,10 @@ $.extend($.validarium, {
 			var finalstate = this._stateCalculate(states);
 			
 			element.removeClass(s.errorClass + " " + s.validClass + " " + s.pendingClass);
+			$(errorel).find('.' + s.pendingClass).remove();
 			switch (newstate) {
 			case "pending":
-				$(errorel).html('Validating...').show();
+				$(errorel).append('<li class="' + s.pendingClass + '">Validating...</li>').show();
 				element.addClass(s.pendingClass);
 				break;
 			case 'unchecked':
