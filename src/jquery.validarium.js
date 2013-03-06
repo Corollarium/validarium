@@ -76,11 +76,11 @@ $.extend($.validarium, {
 			return false;
 		}
 
+		name = name.toLowerCase();
+
 		if (message) {
 			this.messages[name] = message;
 		}
-
-		name = name.toLowerCase();
 
 		if (eventtype == undefined) {
 			eventtype = 'onalways';
