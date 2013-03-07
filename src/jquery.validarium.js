@@ -598,7 +598,7 @@ $.extend($.validarium, {
 			},
 			
 			/***
-			 * Validate a datetime in format yy/mm/ddThh:mm:ss timeformat
+			 * Validate a datetime in ISO8601 (yyyy/mm/ddThh:mm:ss) format
 			 */
 			datetime: function (value, element, param) {
 				if (!value) return true;
