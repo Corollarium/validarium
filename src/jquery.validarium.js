@@ -598,13 +598,13 @@ $.extend($.validarium, {
 			},
 			
 			/***
-			 * Validate a datetime in format yy/mm/dd timeformat
+			 * Validate a datetime in format yy/mm/ddThh:mm:ss timeformat
 			 */
 			datetime: function (value, element, param) {
 				if (!value) return true;
-				if (value.indexOf(' ') == -1) return false;
+				if (value.indexOf('T') == -1) return false;
 				
-				var parts = value.split(" ");
+				var parts = value.split("T");
 				if (parts.length != 2) return false;
 				if ((parts[0] && !parts[1]) || (!parts[0] && parts[1])) return false;
 				
