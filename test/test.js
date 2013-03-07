@@ -217,6 +217,35 @@ test("digits: ", function() {
 	ok( v.form(), 'Valid form' );
 });
 
+test("time: ", function() {
+	expect( 11 );
+
+	var form = $('#testFormTime');
+	var v = $(form).validarium()[0];
+	form.find('input').val('aaweraw');
+	ok( !v.form(), 'Invalid form' );
+	form.find('input').val('14:50');
+	ok( v.form(), 'Valid time 14:50');
+	form.find('input').val('03:21:21');
+	ok( v.form(), 'Valid time 03:21:21');
+	form.find('input').val('4:01:01:772');
+	ok( v.form(), 'Valid time 4:01:01:772');
+	form.find('input').val('22:11:01.333');
+	ok( v.form(), 'Valid time 22:11:01.333');
+	form.find('input').val('03:59:00');
+	ok( v.form(), 'Valid time 03:59:00' );
+	form.find('input').val('03:60:00');
+	ok( !v.form(), 'Invalid time 03:60:00');
+	form.find('input').val('23:22:99');
+	ok( !v.form(), 'Invalid time 23:22:99' );
+	form.find('input').val('02:30:2013');
+	ok( !v.form(), 'Invalid time 02:30:2013' );
+	form.find('input').val('2:2:2:3');
+	ok( !v.form(), 'Invalid time 2:2:2:3' );
+	form.find('input').val('');
+	ok( v.form(), 'Valid form' );
+});
+
 test("date: ", function() {
 	expect( 8 );
 
@@ -259,6 +288,29 @@ test("dateISO: ", function() {
 	ok( !v.form(), 'Invalid form' );
 	form.find('input').val('2013|02|30');
 	ok( !v.form(), 'Invalid form' );
+	form.find('input').val('');
+	ok( v.form(), 'Valid form' );
+});
+
+test("datetime: ", function() {
+	expect( 8 );
+	
+	var form = $('#testFormDatetime');
+	var v = $(form).validarium()[0];
+	form.find('input').val('aaweraw');
+	ok( !v.form(), 'Invalid entry for "aaweraw"' );
+	form.find('input').val('2012/10/20 20:30');
+	ok( v.form(), 'Valid datetime 2012/10/20 20:30' );
+	form.find('input').val('2012/20/20 20:30');
+	ok( !v.form(), 'Invalid date: 2012/20/20 20:30' );
+	form.find('input').val('2012/10/20 40:30');
+	ok( !v.form(), 'Invalid time 2012/10/20 40:30' );
+	form.find('input').val('2012-02-29 12:44:21.456');
+	ok( v.form(), 'Valid datetime 2012-02-29 12:44:21.456' );
+	form.find('input').val('2013/02/30 ');
+	ok( !v.form(), 'Invalid form only date' );
+	form.find('input').val(' 12:44:21.456');
+	ok( !v.form(), 'Invalid form only time' );
 	form.find('input').val('');
 	ok( v.form(), 'Valid form' );
 });

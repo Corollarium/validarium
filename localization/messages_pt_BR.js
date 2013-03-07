@@ -17,8 +17,10 @@
 		url: "Por favor entre com um URL v&aacute;lido.",
 		number: "Por favor entre com u n&uacute;mero v&aacute;lido.",
 		digits: "Por favor entre somente com d&iacute;gitos.",
+		time: "Por favor entre com uma hora v&aacute;lida.",
 		date: "Por favor entre com uma data v&aacute;lida.",
-		dateISO: "Por favor entre com uma data (ISO) v&aacute;lida.",
+		dateiso: "Por favor entre com uma data (ISO) v&aacute;lida.",
+		datetime: "Por favor entre com uma data e hora v&aacute;lida.",
 		mask: "Por favor preencha com base no formato: {mask}.",
 		remote: "Por favor corrija este campo.",
 	});
