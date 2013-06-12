@@ -30,7 +30,7 @@
   },
   "dependencies": {
     "jquery": ">=1.7"
-  }
+  },
   "devDependencies": {
   },
   "keywords": ["validate", "form", "mask"]
