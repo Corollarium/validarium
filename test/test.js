@@ -532,3 +532,6 @@ test("Focus: ", function() {
 	ok(!f3.hasClass("focus"), 'Third element without focus');
 });
 
+test("Autorefresh: ", function() {
+	// TODO
+});

@@ -58,6 +58,7 @@ $.extend($.validarium, {
 		submitHandler: null, /// a function to be called on a submit event.
 		ignore: ":hidden", /// selectors to ignore
 		noignore: ".noignore", /// selectors to don't ignore in every case
+		autoRefreshElements: false, /// if true, refresh element list automatically. Use only on dynamic forms, it's slower.
 		i18n: function(str) { return str; } // function for internationalization
 	},
 
@@ -254,6 +255,10 @@ $.extend($.validarium, {
 			var retval = true;
 			var self = this;
 
+			if (self.autoRefreshElements) {
+				self.updateElementList();
+			}
+			
 			this.firstinvalid = null; // first invalid element, for focus()
 			this.elements.each(function() {
 				var element = this;
@@ -281,7 +286,6 @@ $.extend($.validarium, {
 				self.firstinvalid.focus();
 			}
 
-			
 			if (retval == false) {
 				this.currentForm.triggerHandler("invalid-form", [this]);
 			}
