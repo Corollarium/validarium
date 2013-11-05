@@ -49,8 +49,8 @@ See https://github.com/Corollarium/validarium/wiki
 ### Two fields must match
 ```html
 <form>
-	<input type="password" id="pw1" data-rules-sameas="#pw2"/>
-	<input type="password" id="pw2" data-rules-sameas="#pw1"/>
+	<input type="password" id="pw1" data-rules-equalto="#pw2"/>
+	<input type="password" id="pw2" data-rules-equalto="#pw1"/>
 </form>
 ```
 
