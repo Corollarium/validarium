@@ -545,45 +545,63 @@ $.extend($.validarium, {
 				if (!value) return true;
 				
 				// regular expression to match required time format
-			    re = /^(\d{1,2}):(\d{2})(:(\d{2})([:|\.](\d{1,4}))?)?$/;
-			    if (pieces = value.match(re)) {
-			    	var hour = parseInt(pieces[1], 10);
-				    var min = parseInt(pieces[2], 10);
-				    var sec = 0;
-				    if (pieces[4]) {
-				    	sec = parseInt(pieces[4], 10);
-				    }
-				    
-					return (hour >= 0 && hour < 24 && min >= 0 && min < 60 && sec >= 0 && sec < 60);       
-			    }
-		        return false;
+				re = /^(\d{1,2}):(\d{2})(:(\d{2})([:|\.](\d{1,4}))?)?$/;
+				if (pieces = value.match(re)) {
+					var hour = parseInt(pieces[1], 10);
+					var min = parseInt(pieces[2], 10);
+					var sec = 0;
+					if (pieces[4]) {
+						sec = parseInt(pieces[4], 10);
+					}
+					
+					return (hour >= 0 && hour < 24 && min >= 0 && min < 60 && sec >= 0 && sec < 60);	   
+				}
+				return false;
+			},
+			
+			/**
+			 * 
+			 * @param year
+			 * @param month 1-12
+			 * @param day
+			 * @returns {Boolean}
+			 */
+			_datechecker: function(year, month, day) {
+				var d = new Date();
+				
+				year = parseInt(year, 10);
+				month = parseInt(month, 10);
+				day = parseInt(day, 10);
+				if (isNaN(month) || isNaN(day) || isNaN(year)) {
+					return false;
+				}
+
+				d.setFullYear(year, month-1, day);
+				if (/Invalid|NaN/.test(d.toString())) {
+					return false;
+				}
+
+				if ((d.getMonth()+1 != month) || (d.getDate() != day) || (d.getFullYear()!= year)) {
+					return false;
+				}
+
+				return true;
 			},
 
 			/**
-			 * Checks if it is a valid date.
+			 * Checks if it is a valid date in format MM/DD/YYYY.
 			 * https://github.com/Corollarium/validarium/wiki/date
 			 */
 			date: function(value, element, param) {
-				var d = new Date(value);
 				var pieces = value.split('/');
 				if (!value) {
 					return true;
 				}
-				else if (/Invalid|NaN/.test(d.toString())) {
+				if (pieces.length !== 3) {
 					return false;
 				}
-				
-			    if (pieces.length !== 3) {
-			        return false;
-			    }
 
-			    var month = parseInt(pieces[0], 10);
-			    var day = parseInt(pieces[1], 10);
-			    var year = parseInt(pieces[2], 10);
-				if ((d.getMonth()+1 != month) || (d.getDate() != day) || (d.getFullYear()!= year)) {
-					return false;
-				}
-				return true;
+				return this.onalways._datechecker(pieces[2], pieces[0], pieces[1]);
 			},
 
 			/**
@@ -594,15 +612,17 @@ $.extend($.validarium, {
 			dateiso: function(value, element, param) {
 				if (!value) return true;
 
-				var regex = /^(\d{4})[\/\-\.](\d{1,2})[\/\-\.](\d{1,2})$/;
+				var regex = /^(-?\d{1,4})[\-](\d{1,2})[\-](\d{1,2})$/;
 				var match = regex.exec(value);
-				if (!match) { return false; }
-
-				return $.validarium.prototype.onalways.date(match[2] + '/' + match[3] + '/' + match[1], element, param);
+				if (!match) {
+					return false; 
+				}
+				
+				return $.validarium.prototype.onalways._datechecker(match[1], match[2], match[3]);
 			},
 			
 			/***
-			 * Validate a datetime in ISO8601 (yyyy/mm/ddThh:mm:ss) format
+			 * Validate a datetime in ISO8601 (yyyy-mm-ddThh:mm:ss) format
 			 */
 			datetime: function (value, element, param) {
 				if (!value) return true;

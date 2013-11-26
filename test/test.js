@@ -270,14 +270,16 @@ test("date: ", function() {
 });
 
 test("dateISO: ", function() {
-	expect( 8 );
+	expect( 13 );
 
 	var form = $('#testFormDateISO');
 	var v = $(form).validarium()[0];
 	form.find('input').val('aaweraw');
 	ok( !v.form(), 'Invalid form' );
 	form.find('input').val('2012/10/20');
-	ok( v.form(), 'Valid form' );
+	ok( !v.form(), 'Invalid form ' );
+	form.find('input').val('2012-10-20');
+	ok( v.form(), 'Valid form ' );
 	form.find('input').val('20/20/2020');
 	ok( !v.form(), 'Invalid form' );
 	form.find('input').val('2020/99/99');
@@ -290,23 +292,35 @@ test("dateISO: ", function() {
 	ok( !v.form(), 'Invalid form' );
 	form.find('input').val('');
 	ok( v.form(), 'Valid form' );
+	form.find('input').val('212-03-29');
+	ok( v.form(), 'Valid form' );
+	form.find('input').val('12-03-29');
+	ok( v.form(), 'Valid form 12' );
+	form.find('input').val('2-03-29');
+	ok( v.form(), 'Valid form 2' );
+	form.find('input').val('-32-03-29');
+	ok( v.form(), 'Valid form -32' );
 });
 
 test("datetime: ", function() {
-	expect( 8 );
+	expect( 10 );
 	
 	var form = $('#testFormDatetime');
 	var v = $(form).validarium()[0];
 	form.find('input').val('aaweraw');
 	ok( !v.form(), 'Invalid entry for "aaweraw"' );
 	form.find('input').val('2012/10/20 20:30');
-	ok( v.form(), 'Valid datetime 2012/10/20 20:30' );
+	ok( !v.form(), 'Invalid datetime 2012/10/20 20:30' );
+	form.find('input').val('2012-10-20 20:30');
+	ok( !v.form(), 'Invalid datetime 2012-10-20 20:30');
+	form.find('input').val('2012-10-20T20:30:00');
+	ok( v.form(), 'Valid datetime 2012-10-20T20:30:00');
 	form.find('input').val('2012/20/20 20:30');
 	ok( !v.form(), 'Invalid date: 2012/20/20 20:30' );
 	form.find('input').val('2012/10/20 40:30');
 	ok( !v.form(), 'Invalid time 2012/10/20 40:30' );
 	form.find('input').val('2012-02-29 12:44:21.456');
-	ok( v.form(), 'Valid datetime 2012-02-29 12:44:21.456' );
+	ok( !v.form(), 'Invalid datetime 2012-02-29 12:44:21.456' );
 	form.find('input').val('2013/02/30 ');
 	ok( !v.form(), 'Invalid form only date' );
 	form.find('input').val(' 12:44:21.456');
@@ -317,6 +331,7 @@ test("datetime: ", function() {
 
 test("mask: ", function() {
 	// TODO
+	expect(0);
 });
 
 
@@ -534,4 +549,5 @@ test("Focus: ", function() {
 
 test("Autorefresh: ", function() {
 	// TODO
+	expect(0);
 });
