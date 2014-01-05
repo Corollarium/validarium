@@ -55,7 +55,10 @@ $.extend($.validarium, {
 		errorElement: "ul", /// element used to display the error message
 		focusInvalid: true, /// if true, focus on element when there is an error
 		invalidHandler: null, /// a function to be called when the form is invalid
-		submitHandler: null, /// a function to be called on a submit event.
+		submitHandler: null, /// a function to be called on a submit event, after validation.
+		preSubmitHandler: null, /// a function to be called on submit, before validation. 
+		/// If it returns 'override', submit form without validation. If false, validation is considered before checking.
+		/// If true, normal behavior ensues.
 		ignore: ":hidden", /// selectors to ignore
 		noignore: ".noignore", /// selectors to don't ignore in every case
 		autoRefreshElements: false, /// if true, refresh element list automatically. Use only on dynamic forms, it's slower.
@@ -152,10 +155,24 @@ $.extend($.validarium, {
 			});
 
 			this.currentForm.bind("submit", function(event) {
+				if (self.settings.preSubmitHandler) {
+					var v = self.settings.preSubmitHandler.call(self, self.currentForm[0], self, event);
+					
+					if (v === 'override') {
+						return true;
+					}
+					else if (v == false) {
+						event.preventDefault();
+						event.stopPropagation();
+						return;
+					}
+					// else just continue
+				}
+
 				var valid = self.form("onsubmit");
 
 				if (valid && self.settings.submitHandler) {
-					valid = self.settings.submitHandler.call(self, self.currentForm[0], event);
+					valid = self.settings.submitHandler.call(self, self.currentForm[0], self, event);
 				}
 
 				if (!valid) {
