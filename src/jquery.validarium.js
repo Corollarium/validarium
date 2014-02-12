@@ -640,15 +640,51 @@ $.extend($.validarium, {
 			
 			/***
 			 * Validate a datetime in ISO8601 (yyyy-mm-ddThh:mm:ss) format
+			 * http://en.wikipedia.org/wiki/ISO_8601
 			 */
 			datetime: function (value, element, param) {
 				if (!value) return true;
 				if (value.indexOf('T') == -1) return false;
-				
+
 				var parts = value.split("T");
 				if (parts.length != 2) return false;
 				if ((parts[0] && !parts[1]) || (!parts[0] && parts[1])) return false;
+
+				// optional: timezone
+				var plus = parts[1].indexOf('+');
+				var minus = parts[1].indexOf('-');
+				var Z = parts[1].indexOf('Z');
+				if (plus >= 0 && minus >= 0) return false;
 				
+				var timeparts = null;
+				if (plus >= 0) {
+					timeparts = parts[1].split('+');
+				}
+				else if (minus >= 0) {
+					timeparts = parts[1].split('-');
+				}
+				else if (Z >= 0) {
+					var zpart = parts[1].split('Z');
+					if (zpart.length != 2 || zpart[1].length > 0) {
+						return false;
+					}
+					parts[1] = zpart[0];
+				}
+				if (timeparts) {
+					if (timeparts.length != 2) return false;
+					parts[1] = timeparts[0];
+					var timezone = timeparts[1].substr();
+					if (/^[0-9]{4}$/.exec(timezone) || 
+						/^[0-9]{2}:[0-9]{2}$/.exec(timezone) ||
+						/^[0-9]{2}$/.exec(timezone)
+					) {
+						console.log("ok!!");
+					}
+					else {
+						return false;
+					}
+				}
+
 				var self = $.validarium.prototype.onalways;
 				return self.dateiso(parts[0], element, param) && self.time(parts[1], element, param); 
 			}
