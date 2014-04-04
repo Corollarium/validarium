@@ -38,6 +38,16 @@ See https://github.com/Corollarium/validarium/wiki
 </form>
 ```
 
+### Required with another message
+
+This works for all the other items, too
+
+```html
+<form>
+	<input type="text" data-rules-required="true" data-rules-required-message="My message here" />
+</form>
+```
+
 ### Minlength, maxlength
 
 ```html
