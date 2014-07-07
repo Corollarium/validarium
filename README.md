@@ -92,11 +92,12 @@ This works for all the other items, too
 </form>
 ```
 
-### Url, email
+### Url, email, domain
 ```html
 <form>
 	<input type="text" name="someurl" data-rules-url="true" />
 	<input type="text" name="someemail" data-rules-email="true" />
+	<input type="text" name="somedomain" data-rules-domain="true" />
 </form>
 ```
 
