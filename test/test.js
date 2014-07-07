@@ -203,6 +203,30 @@ test("number: ", function() {
 	ok( v.form(), 'Valid form' );
 });
 
+test("domain: ", function() {
+	expect( 9 );
+	var form = $('#testFormDomain');
+	var v = $(form).validarium()[0];
+	form.find('input').val('awerawer.com');
+	ok( v.form(), 'Valid domain' );
+	form.find('input').val('mwerwer.com.br');
+	ok( v.form(), 'Valid domain' );
+	form.find('input').val('www.mwerwer.com.br');
+	ok( v.form(), 'Valid domain' );
+	form.find('input').val('mwerwer.trave');
+	ok( v.form(), 'Valid domain' );
+	form.find('input').val('');
+	ok( v.form(), 'Valid domain' );
+	form.find('input').val('mwerwer');
+	ok( !v.form(), 'Invalid domain' );
+	form.find('input').val('4234234.conawerhawierh.awerj90awejr2aweslra0w-ker-a0wker-a0wer');
+	ok( !v.form(), 'Invalid domain' );
+	form.find('input').val('@#90s.com');
+	ok( !v.form(), 'Invalid domain' );
+	form.find('input').val('mawerawer.madswfoinawernaoweirnaowernaoweinrawepwersojamwerp.com');
+	ok( !v.form(), 'Invalid domain' );
+});
+
 test("digits: ", function() {
 	expect( 4 );
 	var form = $('#testFormDigits');

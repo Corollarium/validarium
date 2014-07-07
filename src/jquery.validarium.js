@@ -687,6 +687,17 @@ $.extend($.validarium, {
 
 				var self = $.validarium.prototype.onalways;
 				return self.dateiso(parts[0], element, param) && self.time(parts[1], element, param); 
+			},
+
+			domain: function (value, element, param) {
+				if (!value) {
+					return true;
+				}
+				if (value.length > 63) {
+					return false;
+				}
+				var re = new RegExp(/^([a-zA-Z0-9]+\.)?([a-zA-Z0-9]+\.)?[a-zA-Z0-9][a-zA-Z0-9-]+\.[a-zA-Z]{2,6}?$/i);
+				return (value.match(re) != null);
 			}
 		},
 
