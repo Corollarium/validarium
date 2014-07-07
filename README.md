@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/Corollarium/validarium.svg?branch=master)](https://travis-ci.org/Corollarium/validarium)
+
 Validarium
 ==========
 
