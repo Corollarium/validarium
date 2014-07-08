@@ -3,6 +3,7 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks('grunt-contrib-qunit');
 	
 	grunt.initConfig({
+		pkg: grunt.file.readJSON('package.json'),
 		jshint: {
 			all: ['*.js', 'src/*.js', 'test/*.js']
 		},
@@ -11,6 +12,6 @@ module.exports = function (grunt) {
 		}
 	});
 	
-	grunt.registerTask('test', ['jshint', 'qunit']);
+	grunt.registerTask('test', ['qunit']);
 	grunt.registerTask('default', ['test']);
 };
