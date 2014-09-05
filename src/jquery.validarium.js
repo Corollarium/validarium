@@ -56,7 +56,7 @@ $.extend($.validarium, {
 		focusInvalid: true, /// if true, focus on element when there is an error
 		invalidHandler: null, /// a function to be called when the form is invalid
 		submitHandler: null, /// a function to be called on a submit event, after validation.
-		preSubmitHandler: null, /// a function to be called on submit, before validation. 
+		preSubmitHandler: null, /// a function to be called on submit, before validation.
 		/// If it returns 'override', submit form without validation. If false, validation is considered before checking.
 		/// If true, normal behavior ensues.
 		ignore: ":hidden", /// selectors to ignore
@@ -157,7 +157,7 @@ $.extend($.validarium, {
 			this.currentForm.bind("submit", function(event) {
 				if (self.settings.preSubmitHandler) {
 					var v = self.settings.preSubmitHandler.call(self, self.currentForm[0], self, event);
-					
+
 					if (v === 'override') {
 						return true;
 					}
@@ -245,19 +245,19 @@ $.extend($.validarium, {
 					}
 					var value = self.elementValue(element);
 					var state = method.call(self, value, element, rulevalue);
-					
+
 					var errormessage = "Error";
 					if ($(element).attr(name + '-message')) {
 						errormessage = $(element).attr(name + '-message');
 					}
 					else if ($.validarium.messages[rulename]) {
 						errormessage = $.validarium.messages[rulename];
-						token = "{" + rulename + "}";
+						var token = "{" + rulename + "}";
 						while (errormessage.indexOf(token) != -1) {
 							errormessage = errormessage.replace(token, rulevalue);
 						}
 					}
-					
+
 					finalstate = self.elementNotify(element, rulename, state, errormessage);
 				}
 			}
@@ -275,7 +275,7 @@ $.extend($.validarium, {
 			if (self.autoRefreshElements) {
 				self.updateElementList();
 			}
-			
+
 			this.firstinvalid = null; // first invalid element, for focus()
 			this.elements.each(function() {
 				var element = this;
@@ -342,9 +342,9 @@ $.extend($.validarium, {
 			var states = this.getStates(element);
 			states[rulename] = {'state': newstate, 'message': message};
 			element.data('validariumstates', states);
-			
+
 			var finalstate = this._stateCalculate(states);
-			
+
 			element.removeClass(s.errorClass + " " + s.validClass + " " + s.pendingClass);
 			$(errorel).find('.' + s.pendingClass).remove();
 			switch (newstate) {
@@ -412,7 +412,7 @@ $.extend($.validarium, {
 
 		/**
 		 * Returns the state for an element
-		 * 
+		 *
 		 * @param element
 		 * @returns The current state from an array of states
 		 */
@@ -553,16 +553,19 @@ $.extend($.validarium, {
 			digits: function(value, element, param) {
 				return !value ||/^\d+$/.test(value);
 			},
-			
+
 			/**
 			 * Valid a time where hour and minutes are mandatory, seconds and miliseconds are optional
-			 * Format: hour:minute:second:milisecond or hour:minute:second.milisecond 
+			 * Format: hour:minute:second:milisecond or hour:minute:second.milisecond
 			 */
 			time: function (value, element, param) {
-				if (!value) return true;
-				
+				if (!value) {
+					return true;
+				}
+
 				// regular expression to match required time format
-				re = /^(\d{1,2}):(\d{2})(:(\d{2})([:|\.](\d{1,4}))?)?$/;
+				var re = /^(\d{1,2}):(\d{2})(:(\d{2})([:|\.](\d{1,4}))?)?$/;
+				var pieces = null;
 				if (pieces = value.match(re)) {
 					var hour = parseInt(pieces[1], 10);
 					var min = parseInt(pieces[2], 10);
@@ -570,14 +573,14 @@ $.extend($.validarium, {
 					if (pieces[4]) {
 						sec = parseInt(pieces[4], 10);
 					}
-					
-					return (hour >= 0 && hour < 24 && min >= 0 && min < 60 && sec >= 0 && sec < 60);	   
+
+					return (hour >= 0 && hour < 24 && min >= 0 && min < 60 && sec >= 0 && sec < 60);
 				}
 				return false;
 			},
-			
+
 			/**
-			 * 
+			 *
 			 * @param year
 			 * @param month 1-12
 			 * @param day
@@ -585,7 +588,7 @@ $.extend($.validarium, {
 			 */
 			_datechecker: function(year, month, day) {
 				var d = new Date();
-				
+
 				year = parseInt(year, 10);
 				month = parseInt(month, 10);
 				day = parseInt(day, 10);
@@ -632,12 +635,12 @@ $.extend($.validarium, {
 				var regex = /^(-?\d{1,4})[\-](\d{1,2})[\-](\d{1,2})$/;
 				var match = regex.exec(value);
 				if (!match) {
-					return false; 
+					return false;
 				}
-				
+
 				return $.validarium.prototype.onalways._datechecker(match[1], match[2], match[3]);
 			},
-			
+
 			/***
 			 * Validate a datetime in ISO8601 (yyyy-mm-ddThh:mm:ss) format
 			 * http://en.wikipedia.org/wiki/ISO_8601
@@ -655,7 +658,7 @@ $.extend($.validarium, {
 				var minus = parts[1].indexOf('-');
 				var Z = parts[1].indexOf('Z');
 				if (plus >= 0 && minus >= 0) return false;
-				
+
 				var timeparts = null;
 				if (plus >= 0) {
 					timeparts = parts[1].split('+');
@@ -674,7 +677,7 @@ $.extend($.validarium, {
 					if (timeparts.length != 2) return false;
 					parts[1] = timeparts[0];
 					var timezone = timeparts[1].substr();
-					if (/^[0-9]{4}$/.exec(timezone) || 
+					if (/^[0-9]{4}$/.exec(timezone) ||
 						/^[0-9]{2}:[0-9]{2}$/.exec(timezone) ||
 						/^[0-9]{2}$/.exec(timezone)
 					) {
@@ -686,7 +689,7 @@ $.extend($.validarium, {
 				}
 
 				var self = $.validarium.prototype.onalways;
-				return self.dateiso(parts[0], element, param) && self.time(parts[1], element, param); 
+				return self.dateiso(parts[0], element, param) && self.time(parts[1], element, param);
 			},
 
 			domain: function (value, element, param) {
