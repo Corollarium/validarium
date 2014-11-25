@@ -120,10 +120,10 @@ test("addMethod: add ", function() {
 	ok( ret, 'Add method' );
 	ok( !v.form(), 'Invalid form' );
 	ok(form.find('.validarium-error').text() == 'extramethod message', 'Invalid message');
-	
+
 	form.find('input').val('xxx');
 	ok( v.form(), 'Valid form' );
-	
+
 	// replace and don't set param
 	ret = $.validarium.addMethod("extramethod", function(value, element) {
 		return value == 'yyy';
@@ -241,6 +241,35 @@ test("digits: ", function() {
 	ok( v.form(), 'Valid form' );
 });
 
+test("CPF: ", function() {
+	expect( 4 );
+	var form = $('#testFormCPF');
+	var v = $(form).validarium()[0];
+	form.find('input').val('asefewfsefe');
+	ok( !v.form(), 'Invalid form' );
+	form.find('input').val('23423434136');
+	ok( !v.form(), 'Invalid form' );
+	form.find('input').val('847.623.846-07');
+	ok( v.form(), 'Valid form' );
+	form.find('input').val('922.164.172-46');
+	ok( v.form(), 'Valid form' );
+});
+
+test("CNPJ: ", function() {
+	expect( 4 );
+	var form = $('#testFormCNPJ');
+	var v = $(form).validarium()[0];
+	form.find('input').val('qwefqwefwqefqwe');
+	ok( !v.form(), 'Invalid form' );
+	form.find('input').val('922.164.172-46');
+	ok( !v.form(), 'Invalid form' );
+
+	form.find('input').val('37.532.536/0001-68');
+	ok( v.form(), 'Valid form' );
+	form.find('input').val('37.532.536 0001-68');
+	ok( v.form(), 'Valid form' );
+});
+
 test("time: ", function() {
 	expect( 11 );
 
@@ -328,7 +357,7 @@ test("dateISO: ", function() {
 
 test("datetime: ", function() {
 	expect( 18 );
-	
+
 	var form = $('#testFormDatetime');
 	var v = $(form).validarium()[0];
 	var data;
@@ -337,14 +366,14 @@ test("datetime: ", function() {
 	form.find('input').val('2012/10/20 20:30');
 	ok( !v.form(), 'Invalid datetime 2012/10/20 20:30' );
 	form.find('input').val('2012-10-20 20:30');
-	ok( !v.form(), 'Invalid datetime 2012-10-20 20:30'); 
+	ok( !v.form(), 'Invalid datetime 2012-10-20 20:30');
 	form.find('input').val('2012-10-20T20:30:00');
-	ok( v.form(), 'Valid datetime 2012-10-20T20:30:00'); 
-	
+	ok( v.form(), 'Valid datetime 2012-10-20T20:30:00');
+
 	data = '2012-10-20T20:30:00+02:00';
 	form.find('input').val(data);
 	ok( v.form(), 'Valid datetime ' + data);
-	
+
 	data = '2012-10-20T20:30:00+0200';
 	form.find('input').val(data);
 	ok( v.form(), 'Valid datetime ' + data);
@@ -356,7 +385,7 @@ test("datetime: ", function() {
 	data = '2012-10-20T20:30:00-02:00';
 	form.find('input').val(data);
 	ok( v.form(), 'Valid datetime ' + data);
-	
+
 	data = '2012-10-20T20:30:00-0200';
 	form.find('input').val(data);
 	ok( v.form(), 'Valid datetime ' + data);
@@ -364,7 +393,7 @@ test("datetime: ", function() {
 	data = '2012-10-20T20:30:00-02';
 	form.find('input').val(data);
 	ok( v.form(), 'Valid datetime ' + data);
-	
+
 	data = '2012-10-20T20:30:00Z';
 	form.find('input').val(data);
 	ok( v.form(), 'Valid datetime ' + data);
@@ -372,7 +401,7 @@ test("datetime: ", function() {
 	data = '2012-10-20T20:30:00-biz';
 	form.find('input').val(data);
 	ok( !v.form(), 'Invalid datetime ' + data);
-	
+
 	form.find('input').val('2012/20/20 20:30');
 	ok( !v.form(), 'Invalid date: 2012/20/20 20:30' );
 	form.find('input').val('2012/10/20 40:30');

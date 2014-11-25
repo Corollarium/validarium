@@ -24,9 +24,9 @@
 	<div id="qunit-testrunner-toolbar"></div>
 	<h2 id="qunit-userAgent"></h2>
 	<ol id="qunit-tests"></ol>
-	
+
 	<div id="qunit-fixture">
-	
+
 		<form id="testFormRequiredText">
 			<input type="text" name="a" data-rules-required="true"/>
 			<input type="text" name="b" data-rules-required="false"/>
@@ -40,7 +40,7 @@
 			<input type="text" id="regexnoflags" data-rules-regexp="^([a-z]{3})([0-9]{2})$"/>
 			<input type="text" id="regexflags" data-rules-regexp="^([a-z]{3})([0-9]{2})$" data-rules-regexp-flags="i"/>
 		</form>
-		
+
 		<form id="testFormRegexpInvalid">
 			<input type="text" data-rules-regexp="^([a-z]{3})([0-9]{2"/>
 		</form>
@@ -48,7 +48,7 @@
 		<form id="testFormAddMethod">
 			<input type="text" name="a" data-rules-extramethod="true"/>
 		</form>
-		
+
 		<form id="testFormRequiredOption">
 			<select data-rules-required="true">
 				<option value=""></option>
@@ -56,11 +56,11 @@
 				<option value="2">B</option>
 			</select>
 		</form>
-		
+
 		<form id="testFormRequiredCheckbox">
 			<input type="checkbox" name="checkbox" value="a" data-rules-required="true"/>
 		</form>
-		
+
 		<form>
 			<input type="radio" name="radiogrouprequired" value="1" data-rules-required="true"/>
 			<input type="radio" name="radiogrouprequired" value="2" data-rules-required="true"/>
@@ -70,19 +70,19 @@
 			<input type="password" id="equalTopw1"/>
 			<input type="password" id="equalTopw2" data-rules-equalTo="#equalTopw1"/>
 		</form>
-		
+
 		<form id="testFormMinMax">
 			<input type="text" name="a" data-rules-min="4" data-rules-max="10"/>
 		</form>
-		
+
 		<form id="testFormEmail">
 			<input type="text" name="a" data-rules-email="true"/>
 		</form>
-		
+
 		<form id="testFormUrl">
 			<input type="text" name="a" data-rules-url="true"/>
 		</form>
-		
+
 		<form id="testFormDigits">
 			<input type="text" name="a" data-rules-digits="true"/>
 		</form>
@@ -90,31 +90,39 @@
 		<form id="testFormDomain">
 			<input type="text" name="a" data-rules-domain="true"/>
 		</form>
-		
+
 		<form id="testFormNumber">
 			<input type="text" name="a" data-rules-number="true"/>
 		</form>
-		
+
 		<form id="testFormTime">
 			<input type="text" name="a" data-rules-time="true"/>
 		</form>
-		
+
 		<form id="testFormDate">
 			<input type="text" name="a" data-rules-date="true"/>
 		</form>
-		
+
 		<form id="testFormDateISO">
 			<input type="text" name="a" data-rules-dateISO="true"/>
 		</form>
-		
+
 		<form id="testFormDatetime">
 			<input type="text" name="a" data-rules-datetime="true"/>
 		</form>
-		
+
 		<form id="testFormMask">
 			<input type="text" name="a" data-rules-mask="true"/>
 		</form>
-		
+
+		<form id="testFormCPF">
+			<input type="text" name="a" data-rules-cpf="true"/>
+		</form>
+
+		<form id="testFormCNPJ">
+			<input type="text" name="a" data-rules-cnpj="true"/>
+		</form>
+
 		<form id="testFormRemote">
 			<input type="text" name="a" data-rules-remote='{"url": "/rest/test"}'/>
 		</form>
@@ -124,7 +132,7 @@
 			<input type="text" name="i2" data-rules-required="true" style="display: none;" />
 			<input type="text" name="i3" data-rules-required="true" style="display: none;" class="noignore" />
 		</form>
-	
+
 		<form id="testFormFocus">
 			<input type="text" name="f1" data-rules-required="true" />
 			<input type="text" name="f2" data-rules-required="true" />
