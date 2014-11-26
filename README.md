@@ -104,10 +104,12 @@ This works for all the other items, too
 ```
 
 ### CPF and CNPJ
+```html
 <form>
 	<input type="text" name="customer-cpf" data-rules-cpf="true" />
 	<input type="text" name="customer-cnpj" data-rules-cnpj="true" />
 </form>
+```
 
 ## License
 Copyright (c) 2012 Corollarium Tecnologia http://www.corollarium.com
