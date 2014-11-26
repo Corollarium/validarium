@@ -23,5 +23,7 @@
 		datetime: "Por favor entre com uma data e hora v&aacute;lida.",
 		mask: "Por favor preencha com base no formato: {mask}.",
 		remote: "Por favor corrija este campo.",
+		cpf: "Por favor entre com um CPF válido.",
+		cnpj: "Por favor entre com um  CNPJ válido."
 	});
 }(jQuery));
