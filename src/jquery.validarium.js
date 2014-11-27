@@ -705,6 +705,10 @@ $.extend($.validarium, {
 				return (value.match(re) != null);
 			},
 			cpf: function(value, element, param) {
+				if (!value) {
+					return true;
+				}
+				
 				var cpf = value.replace(/[^\d]+/g, ''),
 					sum = 0,
 					remainder;
@@ -743,6 +747,10 @@ $.extend($.validarium, {
 				return true;
 			},
 			cnpj: function(value, element, param) {
+				if (!value) {
+					return true;
+				}
+
 				var cnpj = value.replace(/[^\d]+/g, '');
 
 				if(!cnpj || cnpj.length !== 14) {
