@@ -12,6 +12,16 @@
     "form",
     "mask"
   ],
+  "dependencies": {
+    "jquery": ">=1.7"
+  },
+  "devDependencies": {
+    "grunt": "~0.4",
+    "qunit": "latest",
+    "grunt-contrib-jshint": "~0.8",
+    "grunt-contrib-uglify": "~0.3",
+    "grunt-contrib-qunit": "latest"
+   },
   "license": "MIT",
   "ignore": [
     "**/.*",
