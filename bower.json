@@ -1,0 +1,24 @@
+{
+  "name": "validarium",
+  "version": "1.0.6",
+  "homepage": "https://github.com/Corollarium/validarium",
+  "authors": [
+    "Corollarium Tecnologia (http://www.corollarium.com)"
+  ],
+  "description": "Simple, easy and extensible form validation",
+  "main": "src/jquery.validarium.js",
+  "keywords": [
+    "validate",
+    "form",
+    "mask"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "lib",
+    "test",
+    "tools"
+  ]
+}
