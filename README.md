@@ -7,7 +7,7 @@ A JQuery validation plugin: practical, simple and extensible. Validates your exi
 
 Licensed under the MIT license.
 
-Some ideas and code borrowed from jquery-validate (https://github.com/jzaefferer/jquery-validation/).
+Some ideas and code borrowed from [jquery-validate](https://github.com/jzaefferer/jquery-validation/).
 
 ## Getting Started
 
@@ -26,6 +26,12 @@ $(document).ready(function() {
 </script>
 ```
 
+You can download the package, clone the repository or use [bower](http://bower.io/).
+
+```
+bower install
+```
+ 
 ## Full documentation
 
 See https://github.com/Corollarium/validarium/wiki
