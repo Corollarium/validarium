@@ -72,10 +72,10 @@ This works for all the other items, too
 </form>
 ```
 
-### Field must obey a regex
+### Field must obey a regexp
 ```html
 <form>
-	<input type="text" data-rules-regex="^([a-zA-Z]{5})$" />
+	<input type="text" data-rules-regexp="^([a-zA-Z]{5})$" />
 </form>
 ```
 
