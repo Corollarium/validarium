@@ -426,7 +426,7 @@ $.extend($.validarium, {
 		 */
 		getStates: function (element) {
 			var states = $(element).data('validariumstates');
-			if (states === undefined) {
+			if (states === undefined || states === null) {
 				states = [];
 			}
 			return states;
