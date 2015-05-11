@@ -221,6 +221,11 @@ $.extend($.validarium, {
 				.not(":submit, :reset, :image, [disabled]")
 				.not( this.settings.ignore )
 				.add( this.currentForm.find(this.settings.noignore) );
+
+			// reset states in case of a dynamic data-rules change on some element.
+			this.elements.each(function() {
+				$(this).data('validariumstates', null);
+			});
 		},
 
 		/**
@@ -249,8 +254,9 @@ $.extend($.validarium, {
 					var state = method.call(self, value, element, rulevalue);
 
 					var errormessage = "Error";
-					if ($(element).attr(name + '-message')) {
-						errormessage = $(element).attr(name + '-message');
+					var cstmMessage = $(element).attr(name + '-message');
+					if (cstmMessage) {
+						errormessage = cstmMessage;
 					}
 					else if ($.validarium.messages[rulename]) {
 						errormessage = $.validarium.messages[rulename];
@@ -420,7 +426,7 @@ $.extend($.validarium, {
 		 */
 		getStates: function (element) {
 			var states = $(element).data('validariumstates');
-			if (states == undefined) {
+			if (states === undefined) {
 				states = [];
 			}
 			return states;
