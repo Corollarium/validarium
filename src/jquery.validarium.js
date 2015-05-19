@@ -184,19 +184,25 @@ $.extend($.validarium, {
 				return valid;
 			});
 
-			this.currentForm
-			.delegate(":text, [type='password'], [type='file'], select, textarea, " +
-				"[type='number'], [type='search'] ,[type='tel'], [type='url'], " +
-				"[type='email'], [type='datetime'], [type='date'], [type='month'], " +
-				"[type='week'], [type='time'], [type='datetime-local'], " +
-				"[type='range'], [type='color'] ",
-				"keyup", function() { self.elementValidate(this, 'onalways'); self.elementValidate(this, 'ontype'); })
-			.delegate("[type='radio'], [type='checkbox'], select, option", "click",
-				function() { self.elementValidate(this, 'onalways'); self.elementValidate(this, 'ontype'); });
+			var keyupSelectors = 'select, textarea, :text, ' + [
+				'password', 'file', 'number', 'search', 'tel', 'url', 'email', 'datetime',
+				'date', 'month', 'week', 'time', 'datetime-local', 'range', 'color'
+			].map(function(validType) {
+				return 'input[type="' + validType + '"]';
+			}).join(', ');
 
-			this.currentForm.delegate('input', 'blur',
-				function() {
-				self.elementValidate(this, 'onalways'); self.elementValidate(this, 'onblur'); });
+			this.currentForm.on('keyup', keyupSelectors, function() {
+				self.elementValidate(this, 'onalways');
+				self.elementValidate(this, 'ontype');
+			}).on("click", "[type='radio'], [type='checkbox'], select, option", function() {
+				self.elementValidate(this, 'onalways');
+				self.elementValidate(this, 'ontype');
+			});
+
+			this.currentForm.on('blur', 'input', function() {
+				self.elementValidate(this, 'onalways');
+				self.elementValidate(this, 'onblur');
+			});
 
 			if (this.settings.invalidHandler) {
 				$(this.currentForm).bind("invalid-form", this.settings.invalidHandler);
