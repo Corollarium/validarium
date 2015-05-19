@@ -195,12 +195,15 @@ $.extend($.validarium, {
 
 			this.currentForm.on('keyup', keyupSelectors, function() {
 				self.elementValidate(this, 'onalways');
+				self.elementValidate(this, 'ontype');
 			})
 			.on("click", "input[type='radio'], input[type='checkbox'], select, option", function() {
 				self.elementValidate(this, 'onalways');
+				self.elementValidate(this, 'ontype');
 			})
 			.on('blur', 'input', function() {
 				self.elementValidate(this, 'onalways');
+				self.elementValidate(this, 'onblur');
 			});
 
 			if (this.settings.invalidHandler) {
