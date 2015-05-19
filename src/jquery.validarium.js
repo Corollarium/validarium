@@ -149,14 +149,16 @@ $.extend($.validarium, {
 
 			this.updateElementList();
 
-			this.currentForm.delegate(":submit", "click", function(event){
-				if (self.settings.debug) {
-					// prevent form submit to be able to see console output
-					event.preventDefault();
+			this.currentForm.on(
+				'click', 'input[type="submit"], button:not(type), button[type="submit"]',
+				function(event) {
+					if (self.settings.debug) {
+						// prevent form submit to be able to see console output
+						event.preventDefault();
+					}
 				}
-			});
-
-			this.currentForm.bind("submit", function(event) {
+			)
+			.on('submit', function(event) {
 				if (self.settings.preSubmitHandler) {
 					var v = self.settings.preSubmitHandler.call(self, self.currentForm[0], self, event);
 
@@ -193,15 +195,12 @@ $.extend($.validarium, {
 
 			this.currentForm.on('keyup', keyupSelectors, function() {
 				self.elementValidate(this, 'onalways');
-				self.elementValidate(this, 'ontype');
-			}).on("click", "[type='radio'], [type='checkbox'], select, option", function() {
+			})
+			.on("click", "input[type='radio'], input[type='checkbox'], select, option", function() {
 				self.elementValidate(this, 'onalways');
-				self.elementValidate(this, 'ontype');
-			});
-
-			this.currentForm.on('blur', 'input', function() {
+			})
+			.on('blur', 'input', function() {
 				self.elementValidate(this, 'onalways');
-				self.elementValidate(this, 'onblur');
 			});
 
 			if (this.settings.invalidHandler) {
