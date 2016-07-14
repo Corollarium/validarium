@@ -16,7 +16,7 @@
 
 		if (!this.length) {
 			$.validarium.prototype.debug("No elements");
-			return null;
+			return [];
 		}
 
 		var settings = $.extend({}, $.fn.validarium.defaults, options || {});
