@@ -72,7 +72,7 @@ $.extend($.validarium, {
 	 * @param string name The method name
 	 * @param function callback a function(value, element, param) or function(value, element)
 	 * @param string message
-	 * @param string eventtype One of the event types defined in this.callbacktypes
+	 * @param string|array eventtype One or more of the event types defined in this.callbacktypes
 	 * @return boolean
 	 */
 	addMethod: function(name, callback, message, eventtype) {
@@ -87,12 +87,18 @@ $.extend($.validarium, {
 		}
 
 		if (eventtype == undefined) {
-			eventtype = 'onalways';
+			eventtype = ['onalways'];
 		}
-		else if (!eventtype in this.callbacktypes) {
-			return false;
+		else if (typeof eventtype == "string") {
+			eventtype = [eventtype];
 		}
-		$.validarium.prototype[eventtype][name] = callback;
+		var len = eventtype.length;
+		for (var i = 0; i < len; i++) {
+			if (!eventtype in this.callbacktypes) {
+				return false;
+			}
+			$.validarium.prototype[eventtype[i]][name] = callback;
+		}
 		return true;
 	},
 
@@ -722,7 +728,7 @@ $.extend($.validarium, {
 				if (!value) {
 					return true;
 				}
-				
+
 				var cpf = value.replace(/[^\d]+/g, ''),
 					sum = 0,
 					remainder;
