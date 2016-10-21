@@ -3,7 +3,7 @@
 Validarium
 ==========
 
-A JQuery validation plugin: practical, simple and extensible. Validates your existing forms in HTML without headaches.
+A JQuery validation plugin: practical, simple and extensible. Validates your existing forms in HTML without headaches. Developed by [Corollarium](https://corollarium.com).
 
 Licensed under the MIT license.
 
