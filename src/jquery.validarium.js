@@ -514,12 +514,13 @@ $.extend($.validarium, {
 
 			// https://github.com/Corollarium/validarium/wiki/minlength
 			minlength: function(value, element, param) {
-				return $.trim(value).length >= param;
+				var len = value.length;
+				return !len || len >= param;
 			},
 
 			// https://github.com/Corollarium/validarium/wiki/maxlength
 			maxlength: function(value, element, param) {
-				return $.trim(value).length <= param;
+				return value.length <= param;
 			},
 
 			// https://github.com/Corollarium/validarium/wiki/equalto
