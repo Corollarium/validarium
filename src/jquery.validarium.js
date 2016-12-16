@@ -472,7 +472,9 @@ $.extend($.validarium, {
 			default:
 				return null;
 			}
-			return null;
+			// from what I understand "onalways" should be valid for all the other events
+			// so if method name IS NOT in this.onsubmit we can always check if it's in onalways.
+			return methodname in this.onalways ? this.onalways[methodname] : null;
 		},
 
 		/**
