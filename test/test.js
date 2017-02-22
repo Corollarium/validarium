@@ -55,15 +55,13 @@ test("equalTo(): ", function() {
 });
 
 test("minLength: ", function() {
-	expect( 3 );
+	expect( 2 );
 	var form = $('#testFormLength');
 	var v = $(form).validarium()[0];
 	form.find('input').val('a');
 	ok( !v.form(), 'Invalid form' );
 	form.find('input').val('zwer');
 	ok( v.form(), 'Valid form' );
-	form.find('input').val('');
-	ok( !v.form(), 'invalid form' );
 });
 
 test("maxLength: ", function() {

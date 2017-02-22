@@ -3,7 +3,8 @@
 Validarium
 ==========
 
-A JQuery validation plugin: practical, simple and extensible. Validates your existing forms in HTML without headaches. Developed by [Corollarium](https://corollarium.com).
+A JQuery validation plugin: practical, simple and extensible. Validates your existing forms in HTML without headaches. 
+Developed by [Corollarium](https://corollarium.com).
 
 Licensed under the MIT license.
 
@@ -63,6 +64,7 @@ This works for all the other items, too
 	<input type="text" data-rules-minlength="5" data-rules-maxlength="10" />
 </form>
 ```
+(note that minlength accepts empty values, if you don't want those use the "required" rule)
 
 ### Two fields must match
 ```html

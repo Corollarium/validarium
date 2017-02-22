@@ -549,6 +549,7 @@ $.extend($.validarium, {
 
 			// https://github.com/Corollarium/validarium/wiki/min
 			min: function(value, element, param) {
+				// !value because min doesn't imply required!
 				return !value || (parseFloat(value) >= parseFloat(param));
 			},
 
