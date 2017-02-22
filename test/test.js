@@ -481,7 +481,8 @@ test("message: ", function() {
 	var form = $('#testFormRequiredText');
 	$(form).validarium();
 	var input = $(form.find('input[name="a"]'));
-	input.focus(); 	input.blur();
+	input.focus();
+	input.blur();
 	equal( $.validarium.messages.required, form.find('.validarium-error').text(), 'Default message input');
 
 	var form2 = $('#testFormRequiredCheckbox');
@@ -491,23 +492,28 @@ test("message: ", function() {
 	equal( $.validarium.messages.required, form2.find('.validarium-error').text(), 'Default message checkbox');
 
 	$.validarium.messages.required = 'Test';
-	input.focus(); 	input.blur();
+	input.focus();
+	input.blur();
 	equal( 'Test', form.find('.validarium-error').text(), 'Change default message');
 
 	checkbox.focus(); 	checkbox.blur();
 	equal( 'Test', form2.find('.validarium-error').text(), 'Change default message checkbox');
 
 	input.attr('data-rules-required-message', 'Specific message');
-	input.focus(); 	input.blur();
+	input.focus();
+	input.blur();
 	equal( 'Specific message', form.find('.validarium-error').text(), 'Especific message');
 
-	checkbox.focus(); 	checkbox.blur();
+	checkbox.focus();
+	checkbox.blur();
 	equal( 'Test', form2.find('.validarium-error').text(), 'Maintain default message checkbox');
 
 	form = $('#testFormLength');
 	$(form).validarium();
 	input = $(form.find('input'));
-	input.focus(); 	input.blur();
+	input.focus();
+	input.val('m');
+	input.blur();
 	var minvalue = input.attr('data-rules-minlength');
 	var expected = $.validarium.messages.minlength.replace("{minlength}", minvalue);
 	var found = form.find('.validarium-error').text();
