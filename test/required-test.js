@@ -31,3 +31,11 @@ test("required(): checkbox", function() {
 	form.find('input').attr('checked','checked');
 	ok( v.form(), 'Valid form' );
 });
+
+test("required(): radio", function() {
+	var $formRadio = $('#radioRequired');
+	var _validarium = $formRadio.validarium()[0];
+	ok( !_validarium.form(), 'Invalid form' );
+	$formRadio.find('input').first().prop('checked', true);
+	ok( _validarium.form(), 'Valid form' );
+});
