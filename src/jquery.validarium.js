@@ -29,6 +29,7 @@
 				$.data(this, 'validarium', instance);
 			}
 			ret.push(instance);
+
 		});
 		return ret;
 	};
@@ -200,15 +201,12 @@ $.extend($.validarium, {
 			}).join(', ');
 
 			this.currentForm.on('keyup', keyupSelectors, function() {
-				self.elementValidate(this, 'onalways');
 				self.elementValidate(this, 'ontype');
 			})
 			.on("click", "input[type='radio'], input[type='checkbox'], select, option", function() {
-				self.elementValidate(this, 'onalways');
 				self.elementValidate(this, 'ontype');
 			})
 			.on('blur', 'input', function() {
-				self.elementValidate(this, 'onalways');
 				self.elementValidate(this, 'onblur');
 			});
 
@@ -260,12 +258,16 @@ $.extend($.validarium, {
 
 				if (name.substr(0, 10) == "data-rules") {
 					var rulename = name.substr(11);
-					var method = self.getMethod(rulename, eventtype);
-					if (!method) {
-						continue;
-					}
+					var methods = self.getMethods(rulename, eventtype);
+					var state = true;
 					var value = self.elementValue(element);
-					var state = method.call(self, value, element, rulevalue);
+					for (var j=0; j<methods.length; j++) {
+						var method = methods[j];
+						state = method.call(self, value, element, rulevalue);
+						if (!state) { // already failed, no point in making more validations (if they exist)
+							break;
+						}
+					}
 
 					var errormessage = "Error";
 					var cstmMessage = $(element).attr(name + '-message');
@@ -308,16 +310,6 @@ $.extend($.validarium, {
 						self.firstinvalid = element;
 					}
 					retval = false;
-				}
-
-				if (eventtype != 'onalways') {
-					valid = self.elementValidate(element, 'onalways');
-					if (valid != true) {
-						if (!self.firstinvalid) {
-							self.firstinvalid = element;
-						}
-						retval = false;
-					}
 				}
 			});
 
@@ -447,34 +439,21 @@ $.extend($.validarium, {
 		},
 
 		/**
-		 * Returns the callback
+		 * Returns validation callbacks
 		 *
 		 * @param methodname
 		 * @param eventtype
-		 * @returns
+		 * @returns Array
 		 */
-		getMethod: function(methodname, eventtype) {
-			switch (eventtype) {
-			case undefined:
-			case null:
-			case 'onalways':
-				if (methodname in this.onalways) return this.onalways[methodname];
-				break;
-			case 'onsubmit':
-				if (methodname in this.onsubmit) return this.onsubmit[methodname];
-				break;
-			case 'onblur':
-				if (methodname in this.onblur) return this.onblur[methodname];
-				break;
-			case 'ontype':
-				if (methodname in this.ontype) return this.ontype[methodname];
-				break;
-			default:
-				return null;
-			}
-			// from what I understand "onalways" should be valid for all the other events
-			// so if method name IS NOT in this.onsubmit we can always check if it's in onalways.
-			return methodname in this.onalways ? this.onalways[methodname] : null;
+		getMethods: function(methodname, eventtype) {
+			var self = this;
+			return $.validarium.callbacktypes.map(function(type) {
+				return eventtype === type && methodname in self[type] ? self[type][methodname] : null;
+			}).concat(
+				(eventtype !== 'onalways' && methodname in self.onalways ? self.onalways[methodname] : null)
+			).filter(function(method) {
+				return method !== null;
+			});
 		},
 
 		/**
@@ -549,7 +528,6 @@ $.extend($.validarium, {
 
 			// https://github.com/Corollarium/validarium/wiki/min
 			min: function(value, element, param) {
-				// !value because min doesn't imply required!
 				return !value || (parseFloat(value) >= parseFloat(param));
 			},
 
