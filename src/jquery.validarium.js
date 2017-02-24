@@ -69,6 +69,16 @@ $.extend($.validarium, {
 	},
 
 	/**
+	 *
+	 * @param name
+	 * @param eventtype
+	 * @param callback
+	 */
+	newValidationRule: function (name, eventtype, callback) {
+		this.addMethod()
+	},
+
+	/**
 	 * Add a new method to validarium list. If a method already exists it is
 	 * replaced.
 	 *
@@ -77,6 +87,7 @@ $.extend($.validarium, {
 	 * @param string message
 	 * @param string|array eventtype One or more of the event types defined in this.callbacktypes
 	 * @return boolean
+	 * @deprecated use newValidationRule
 	 */
 	addMethod: function (name, callback, message, eventtype) {
 		if (!name || !$.isFunction(callback)) {
@@ -264,21 +275,32 @@ $.validarium.prototype = {
 				var methods = self.getMethods(rulename, eventtype);
 				var state = true;
 				var value = self.elementValue(element);
+				var _errMsg = '';
 				for (var j=0; j<methods.length; j++) {
 					var method = methods[j];
-					state = method.call(self, value, element, rulevalue);
-					if (!state) { // already failed, no point in making more validations (if they exist)
+					// call the validation callback
+					try {
+						// state = if for backwards compatibility
+						state = method.call(self, value, element, rulevalue);
+					}
+					catch(e) {
+						_errMsg = e;
+						state = false;
+					}
+
+					if (state === false) { // already failed, no point in making more validations (if they exist)
 						break;
 					}
 				}
 
 				var errormessage = "Error";
+				// TODO review this, it needs at least some documentation
 				var cstmMessage = $(element).attr(name + '-message');
 				if (cstmMessage) {
 					errormessage = cstmMessage;
 				}
-				else if ($.validarium.messages[rulename]) {
-					errormessage = $.validarium.messages[rulename];
+				else if (_errMsg || $.validarium.messages[rulename]) {
+					errormessage = _errMsg || $.validarium.messages[rulename];
 					var token = "{" + rulename + "}";
 					while (errormessage.indexOf(token) != -1) {
 						errormessage = errormessage.replace(token, rulevalue);
@@ -293,7 +315,7 @@ $.validarium.prototype = {
 
 	/**
 	 * Validates the form
-	 * @return boolean True if ok, false ir
+	 * @return boolean True if ok, false irmessages
 	 */
 	form: function(eventtype) {
 		var retval = true;

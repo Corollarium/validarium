@@ -12,6 +12,27 @@ Easy:
 var validarium = $("#myform").validarium()[0].updateElementList();
 ```
 
+## How do I create a new validation rule?
+
+Let's suppose you want 
+
+         <input type="text" data-rule-mycheck="xyz"/>
+
+Here is a sample code
+
+		$.validarium.addMethod(
+			'mycheck',  // same as the data-rule-xxxx
+			['blur', 'submit'],
+			function(value, element, key) {
+				// do some checks here with value (the element value), 
+				// element (the actual element) of key (the value of the data-rule, in this case xyz
+				if (!value) {
+					throw 'Invalid mycheck.'; // error message
+				}
+			}
+		);
+
+
 
 ## How do I get my callback called on form submission?
 Use `settings.submitHandler`, which is called just after validation:
