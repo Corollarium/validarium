@@ -351,9 +351,6 @@ $.validarium.prototype = {
 			self.firstinvalid.focus();
 		}
 
-		if (retval == false) {
-			this.currentForm.triggerHandler("invalid-form", [this]);
-		}
 		return retval;
 	},
 
@@ -413,7 +410,6 @@ $.validarium.prototype = {
 			}
 			$(errorel).show();
 			element.addClass(s.errorClass);
-			$(element).triggerHandler("invalid-field", [element, this]);
 			break;
 		case true:
 			$(errorel).find('[data-rule=' + rulename + ']').remove();
