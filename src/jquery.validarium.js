@@ -157,8 +157,8 @@ $.extend($.validarium, {
 		digits: "Please enter only digits.",
 		time: "Please enter a valid time",
 		date: "Please enter a valid date.",
-		dateiso: "Please enter a valid date (ISO).",
-		datetime: "Please enter a valid datetime",
+		dateiso: "Please enter a valid date (ISO yyyy-mm-dd).",
+		datetime: "Please enter a valid datetime (ISO yyyy-mm-ddThh:mm:ss)",
 		mask: "Please fill based on mask: {mask}",
 		remote: "Please fix this field."
 	},
