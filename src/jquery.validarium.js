@@ -226,10 +226,6 @@ $.validarium.prototype = {
 		.on('blur', 'input', function() {
 			self.elementValidate(this, 'onblur');
 		});
-
-		if (this.settings.invalidHandler) {
-			$(this.currentForm).bind("invalid-form", this.settings.invalidHandler);
-		}
 	},
 
 	settings: {},
@@ -349,6 +345,10 @@ $.validarium.prototype = {
 
 		if (eventtype == "onsubmit" && self.settings.focusInvalid && self.firstinvalid) {
 			self.firstinvalid.focus();
+		}
+
+		if (retval === false && this.settings.invalidHandler) {
+			this.settings.invalidHandler.call(this.currentForm);
 		}
 
 		return retval;
