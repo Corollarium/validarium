@@ -348,7 +348,8 @@ $.validarium.prototype = {
 		}
 
 		if (retval === false && this.settings.invalidHandler) {
-			this.settings.invalidHandler.call(this.currentForm);
+			// backwards
+			this.settings.invalidHandler.call(this, this.currentForm, this);
 		}
 
 		return retval;
