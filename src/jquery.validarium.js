@@ -311,6 +311,12 @@ $.validarium.prototype = {
 				}
 
 				finalstate = self.elementNotify(element, rulename, state, errormessage);
+
+				// the field can have multiple rules and the first could fail while the second passes,
+				// so at the first failure we should stop with an error notification
+				if (state === false) {
+					break;
+				}
 			}
 		}
 		return finalstate;
