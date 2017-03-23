@@ -11,28 +11,31 @@
  */
 
 (function($) {
-	$.fn.validarium = function(options) {
-		var self = this;
 
-		if (!this.length) {
-			$.validarium.prototype.debug("No elements");
-			return [];
+'use strict';
+
+$.fn.validarium = function(options) {
+	var self = this;
+
+	if (!this.length) {
+		$.validarium.prototype.debug("No elements");
+		return [];
+	}
+
+	var settings = $.extend({}, $.fn.validarium.defaults, options || {});
+	var ret = [];
+	$(this).each(function() {
+		// check if validarium for this form was already created
+		var instance = $.data(this, 'validarium');
+		if (!instance) {
+			instance = new $.validarium(settings, this);
+			$.data(this, 'validarium', instance);
 		}
+		ret.push(instance);
 
-		var settings = $.extend({}, $.fn.validarium.defaults, options || {});
-		var ret = [];
-		$(this).each(function() {
-			// check if validarium for this form was already created
-			var instance = $.data(this, 'validarium');
-			if (!instance) {
-				instance = new $.validarium(settings, this);
-				$.data(this, 'validarium', instance);
-			}
-			ret.push(instance);
-
-		});
-		return ret;
-	};
+	});
+	return ret;
+};
 
 $.validarium = function( options, form ) {
 	this.settings = $.extend( true, {}, $.validarium.defaults, options );
