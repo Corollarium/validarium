@@ -331,7 +331,19 @@ $.validarium.prototype = {
 		}
 
 		this.firstinvalid = null; // first invalid element, for focus()
-		this.elements.each(function() {
+
+		// the filter will avoid repeated validation of radio/checkbox groups (group = all have the same name)
+		var namesMap = {};
+		this.elements.filter(function() {
+			var name = this.name;
+			if (name in namesMap) {
+				return false;
+			}
+			else {
+				namesMap[name] = true;
+				return true;
+			}
+		}).each(function() {
 			var element = this;
 
 			var valid = self.elementValidate(element, eventtype);
@@ -363,11 +375,27 @@ $.validarium.prototype = {
 	 * @returns
 	 */
 	elementError: function(element) {
-		var parent = $(element).parent();
-		var errorel = parent.find(this.settings.errorElement + ".validarium-error");
+		var $el = $(element);
+		var customFn = $el.attr('data-validarium-error-fn');
+		if (customFn) {
+			// allow functions inside objects, ex: "MyObj.validariumRadioErrorFn"
+			var fn = customFn.split('.').reduce(function(prevObj, nextStr) {
+				return prevObj[nextStr];
+			}, window);
+
+			if (typeof fn === 'function') {
+				return fn(this, element);
+			}
+			else {
+				console.error('Invalid custom error function', customFn, element);
+			}
+		}
+
+		var $parent = $el.parent();
+		var errorel = $parent.find(this.settings.errorElement + ".validarium-error");
 		if (!errorel.length) {
 			errorel = $('<' + this.settings.errorElement + ' class="validarium-error"/>');
-			parent.append(errorel);
+			$parent.append(errorel);
 			return errorel;
 		}
 		return errorel[0];
