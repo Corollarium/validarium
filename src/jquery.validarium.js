@@ -64,7 +64,7 @@ $.extend($.validarium, {
 		/// If it returns 'override', submit form without validation. If false, validation is considered before checking.
 		/// If true, normal behavior ensues.
 		ignore: ":hidden", /// selectors to ignore
-		noignore: ".noignore", /// selectors to don't ignore in every case
+		noignore: ".noignore:not([disabled])", /// selectors to don't ignore in every case
 		autoRefreshElements: false, /// if true, refresh element list automatically. Use only on dynamic forms, it's slower.
 		i18n: function (str) {
 			return str;
@@ -740,7 +740,7 @@ $.validarium.prototype = {
 					/^[0-9]{2}:[0-9]{2}$/.exec(timezone) ||
 					/^[0-9]{2}$/.exec(timezone)
 				) {
-					console.log("ok!!");
+					this.debug("ok!!");
 				}
 				else {
 					return false;
