@@ -272,10 +272,10 @@ $.validarium.prototype = {
 			if (name.substr(0, 10) == "data-rules") {
 				var rulename = name.substr(11);
 				var methods = self.getMethods(rulename, eventtype);
-				var state = true;
 				var value = self.elementValue(element);
 				var _errMsg = '';
 				for (var j=0; j<methods.length; j++) {
+					var state = false;
 					var method = methods[j];
 					// call the validation callback
 					try {
@@ -287,31 +287,25 @@ $.validarium.prototype = {
 						state = false;
 					}
 
-					if (state === false) { // already failed, no point in making more validations (if they exist)
+					var errormessage = "Error";
+					// TODO review this, it needs at least some documentation
+					var cstmMessage = $(element).attr(name + '-message');
+					if (cstmMessage) {
+						errormessage = cstmMessage;
+					}
+					else if (_errMsg || $.validarium.messages[rulename]) {
+						errormessage = _errMsg || $.validarium.messages[rulename];
+						var token = "{" + rulename + "}";
+						while (errormessage.indexOf(token) != -1) {
+							errormessage = errormessage.replace(token, rulevalue);
+						}
+					}
+
+					finalstate = self.elementNotify(element, rulename, state, errormessage);
+
+					if (finalstate === false) { // already failed, no point in making more validations (if they exist)
 						break;
 					}
-				}
-
-				var errormessage = "Error";
-				// TODO review this, it needs at least some documentation
-				var cstmMessage = $(element).attr(name + '-message');
-				if (cstmMessage) {
-					errormessage = cstmMessage;
-				}
-				else if (_errMsg || $.validarium.messages[rulename]) {
-					errormessage = _errMsg || $.validarium.messages[rulename];
-					var token = "{" + rulename + "}";
-					while (errormessage.indexOf(token) != -1) {
-						errormessage = errormessage.replace(token, rulevalue);
-					}
-				}
-
-				finalstate = self.elementNotify(element, rulename, state, errormessage);
-
-				// the field can have multiple rules and the first could fail while the second passes,
-				// so at the first failure we should stop with an error notification
-				if (state === false) {
-					break;
 				}
 			}
 		}
