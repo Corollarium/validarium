@@ -867,7 +867,7 @@ $.validarium.prototype = {
 	ontype: {
 		// https://github.com/Corollarium/validarium/wiki/mask
 		inputmask: function(value, element, param) {
-			return $(element).inputmask('isComplete');
+			return value === null || value === '' || $(element).inputmask('isComplete');
 		}
 	},
 
