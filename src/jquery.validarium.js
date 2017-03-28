@@ -162,7 +162,7 @@ $.extend($.validarium, {
 		date: "Please enter a valid date.",
 		dateiso: "Please enter a valid date (ISO yyyy-mm-dd).",
 		datetime: "Please enter a valid datetime (ISO yyyy-mm-ddThh:mm:ss)",
-		mask: "Please fill based on mask: {mask}",
+		inputmask: "Please fill based on mask: {inputmask}",
 		remote: "Please fix this field."
 	},
 });
