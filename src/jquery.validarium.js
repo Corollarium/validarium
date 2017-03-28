@@ -330,7 +330,10 @@ $.validarium.prototype = {
 		var namesMap = {};
 		this.elements.filter(function() {
 			var name = this.name;
-			if (name in namesMap) {
+			if (!name) {
+				return true;
+			}
+			else if (name in namesMap) {
 				return false;
 			}
 			else {
@@ -362,11 +365,10 @@ $.validarium.prototype = {
 	},
 
 	/**
-	 * Returns the an element, associated with the parameter, that is used to
-	 * print the error message.
+	 * Returns the element that is going to receive the error messages for validations on "element"
 	 *
 	 * @param element
-	 * @returns
+	 * @returns {HTMLElement}
 	 */
 	elementError: function(element) {
 		var $el = $(element);
