@@ -228,7 +228,7 @@ $.validarium.prototype = {
 				window.clearTimeout(keyupTimer);
 				keyupTimer = setTimeout(function() {
 					self.elementValidate(innerThis, 'ontype');
-				}, $.validarium.defaults.timeBeforeTypeValidation);
+				}.bind(this), $.validarium.defaults.timeBeforeTypeValidation);
 			}
 			else {
 				self.elementValidate(this, 'ontype');
@@ -301,17 +301,20 @@ $.validarium.prototype = {
 						state = false;
 					}
 
-					var errormessage = "Error";
-					// TODO review this, it needs at least some documentation
-					var cstmMessage = $(element).attr(name + '-message');
-					if (cstmMessage) {
-						errormessage = cstmMessage;
-					}
-					else if (_errMsg || $.validarium.messages[rulename]) {
-						errormessage = _errMsg || $.validarium.messages[rulename];
-						var token = "{" + rulename + "}";
-						while (errormessage.indexOf(token) != -1) {
-							errormessage = errormessage.replace(token, rulevalue);
+					var errormessage = '';
+					if (state !== true) {
+						errormessage = 'Error';
+						// TODO review this, it needs at least some documentation
+						var cstmMessage = $(element).attr(name + '-message');
+						if (cstmMessage) {
+							errormessage = cstmMessage;
+						}
+						else if (_errMsg || $.validarium.messages[rulename]) {
+							errormessage = _errMsg || $.validarium.messages[rulename];
+							var token = '{' + rulename + '}';
+							while (errormessage.indexOf(token) != -1) {
+								errormessage = errormessage.replace(token, rulevalue);
+							}
 						}
 					}
 
