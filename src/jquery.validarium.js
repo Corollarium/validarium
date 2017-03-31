@@ -66,6 +66,10 @@ $.extend($.validarium, {
 		ignore: ":hidden", /// selectors to ignore
 		noignore: ".noignore:not([disabled])", /// selectors to don't ignore in every case
 		autoRefreshElements: false, /// if true, refresh element list automatically. Use only on dynamic forms, it's slower.
+		/**
+		 * Time (in milliseconds) to wait before triggering a 'ontype' validation
+		 */
+		timeBeforeTypeValidation: 200,
 		i18n: function (str) {
 			return str;
 		} // function for internationalization
@@ -217,8 +221,18 @@ $.validarium.prototype = {
 			return 'input[type="' + validType + '"]';
 		}).join(', ');
 
+		var keyupTimer = null;
 		this.currentForm.on('keyup', keyupSelectors, function() {
-			self.elementValidate(this, 'ontype');
+			var innerThis = this;
+			if ($.validarium.defaults.timeBeforeTypeValidation) {
+				window.clearTimeout(keyupTimer);
+				keyupTimer = setTimeout(function() {
+					self.elementValidate(innerThis, 'ontype');
+				}, $.validarium.defaults.timeBeforeTypeValidation);
+			}
+			else {
+				self.elementValidate(this, 'ontype');
+			}
 		})
 		.on("click", "input[type='radio'], input[type='checkbox'], select, option", function() {
 			self.elementValidate(this, 'ontype');
