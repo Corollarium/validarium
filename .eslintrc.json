@@ -1,0 +1,27 @@
+{
+	"rules": {
+		"no-undef": 2
+	},
+	"globals": {
+		"$": true,
+		"jQuery": true,
+		"io": true,
+		"Promise": true,
+		"Uint8Array": true,
+		"CamCapture": true,
+		"device": true,
+		"FastClick": true,
+		"ss": true,
+		"CamGui": true,
+		"Util": true,
+		"App": true,
+		"Connection": true,
+		"debug": true,
+		"CONST": true,
+		"ArrayBuffer": true,
+		"ezar": true
+	},
+	"env": {
+		"browser": true
+	}
+}

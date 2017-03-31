@@ -21,7 +21,7 @@
 		date: "Por favor entre com uma data v&aacute;lida.",
 		dateiso: "Por favor entre com uma data (ISO) v&aacute;lida.",
 		datetime: "Por favor entre com uma data e hora v&aacute;lida.",
-		mask: "Por favor preencha com base no formato: {mask}.",
+		inputmask: "Por favor preencha com base no formato: {inputmask}.",
 		remote: "Por favor corrija este campo.",
 		cpf: "Por favor entre com um CPF válido.",
 		cnpj: "Por favor entre com um  CNPJ válido."

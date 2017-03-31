@@ -29,7 +29,10 @@
     "jquery": ">=1.7"
   },
   "devDependencies": {
-    "grunt": "~0.4",
+	"jsdoc": "3.*",
+	"eslint": "3.*",
+    "grunt": "0.*",
+    "grunt-cli": "0.*",
     "qunit": "latest",
     "grunt-contrib-jshint": "~0.8",
     "grunt-contrib-uglify": "~0.3",
