@@ -1,26 +1,32 @@
 /**
- * Validarium: a jquery plugin for validating forms
- *
- * https://github.com/Corollarium/validarium
- *
- * Copyright 2012 Corollarium Tecnologia: http://www.corollarium.com
- *
- * Licensed under the MIT license (http://www.opensource.org/licenses/mit-license.php)
+ * Validarium: a jquery plugin for validating forms https://github.com/Corollarium/validarium
  *
  * Parts of this code from http://bassistance.de/jquery-plugins/jquery-plugin-validation/
+ *
+ *  @fileoverview Validarium: a jquery plugin for validating forms
+ *  @author Corollarium Tecnologia: https://www.corollarium.com
+ *  @license Licensed under the MIT license https://opensource.org/licenses/mit-license.php
+ *  @copyright 2012-2017 Corollarium Tecnologia: https://www.corollarium.com
+ *  @version 2.0.0
+ *  @requires jQuery
  */
 
 (function($) {
 
 'use strict';
 
+/**
+ * See (https://github.com/Corollarium/validarium).
+ * @class $.validarium
+ * @memberOf jQuery.fn
+ * See the jQuery Library (https://github.com/Corollarium/validarium) for full details.  This just
+ * documents the function and classes that are added to jQuery by this plug-in.
+ */
 $.fn.validarium = function(options) {
 	var self = this;
 
-	if (!this.length) {
+	if (!this.length)
 		$.validarium.prototype.debug("No elements");
-		return [];
-	}
 
 	var settings = $.extend({}, $.fn.validarium.defaults, options || {});
 	var ret = [];
