@@ -1,6 +1,5 @@
 /**
  * Validarium: a jquery plugin for validating forms https://github.com/Corollarium/validarium
- *
  * Parts of this code from http://bassistance.de/jquery-plugins/jquery-plugin-validation/
  *
  *  @fileoverview Validarium: a jquery plugin for validating forms
@@ -11,17 +10,19 @@
  *  @requires jQuery
  */
 
+/**
+ * See (https://jquery.com/).
+ * @name $
+ * @class
+ * See the jQuery Library  (https://jquery.com/) for full details. This just
+ * documents the function and classes that are added to jQuery by this plug-in.
+ */
+
+
 (function($) {
 
 'use strict';
 
-/**
- * See (https://github.com/Corollarium/validarium).
- * @class $.validarium
- * @memberOf jQuery.fn
- * See the jQuery Library (https://github.com/Corollarium/validarium) for full details.  This just
- * documents the function and classes that are added to jQuery by this plug-in.
- */
 $.fn.validarium = function(options) {
 	var self = this;
 
@@ -43,6 +44,10 @@ $.fn.validarium = function(options) {
 	return ret;
 };
 
+/**
+ * @constructor
+ * @memberOf $
+ */
 $.validarium = function( options, form ) {
 	this.settings = $.extend( true, {}, $.validarium.defaults, options );
 
@@ -55,8 +60,19 @@ $.validarium = function( options, form ) {
 };
 
 $.extend($.validarium, {
+
+	/**
+	 * Types of events TODO
+	 * @memberOf $.validarium
+	 * @property {string[]}
+	 */
 	callbacktypes: ['ontype', 'onblur', 'onsubmit', 'onalways'],
 
+	/**
+	 * Default settings value
+	 * @memberOf $.validarium
+	 * @property {Object}
+	 */
 	defaults: {
 		debug: false, /// if true, print
 		errorClass: "error", /// class added to invalid elements.
@@ -82,10 +98,10 @@ $.extend($.validarium, {
 	},
 
 	/**
-	 *
-	 * @param name
-	 * @param eventtype
-	 * @param callback
+	 * @param {string} name
+	 * @param {string} eventtype
+	 * @param {function} callback
+	 * @memberOf $.validarium
 	 */
 	newValidationRule: function (name, eventtype, callback) {
 		this.addMethod()
@@ -101,6 +117,7 @@ $.extend($.validarium, {
 	 * @param string|array eventtype One or more of the event types defined in this.callbacktypes
 	 * @return boolean
 	 * @deprecated use newValidationRule
+	 * @memberOf $.validarium
 	 */
 	addMethod: function (name, callback, message, eventtype) {
 		if (!name || !$.isFunction(callback)) {
@@ -132,7 +149,10 @@ $.extend($.validarium, {
 	/**
 	 * Remove a method by name. If it does not exist, nothing happens.
 	 *
-	 * @param string name
+	 * @param {string} name
+	 * @param {string} eventtype
+	 *
+	 * @memberOf $.validarium
 	 */
 	removeMethod: function (name, eventtype) {
 		name = name.toLowerCase();
@@ -154,6 +174,10 @@ $.extend($.validarium, {
 		return true;
 	},
 
+	/**
+	 * @memberOf $.validarium
+	 * @property {Object}
+	 */
 	messages: {
 		required: "This field is required.",
 		minlength: "Please enter at least {minlength} characters.",
@@ -174,10 +198,15 @@ $.extend($.validarium, {
 		datetime: "Please enter a valid datetime (ISO yyyy-mm-ddThh:mm:ss)",
 		inputmask: "Please fill based on mask: {inputmask}",
 		remote: "Please fix this field."
-	},
+	}
 });
 
 $.validarium.prototype = {
+
+	/**
+	 * @memberof $.validarium.prototype
+	 * @private
+	 */
 	init: function() {
 		var self = this;
 
@@ -248,8 +277,14 @@ $.validarium.prototype = {
 		});
 	},
 
+	/**
+	 * @private
+	 */
 	settings: {},
 
+	/**
+	 * @private
+	 */
 	debug: function(message) {
 		if (('debug' in this.settings && this.settings.debug) || $.validarium.defaults.debug) {
 			console.warn("Validarium:" + message);
@@ -259,6 +294,7 @@ $.validarium.prototype = {
 	/**
 	 * Updates the element list. Call this if you have a dynamic form
 	 * and added new elements to it.
+	 * @memberOf $.validarium.prototype
 	 */
 	updateElementList: function() {
 		this.elements = this.currentForm
@@ -279,6 +315,7 @@ $.validarium.prototype = {
 	 * @param element
 	 * @param eventtype
 	 * @returns {Boolean}
+	 * @private
 	 */
 	elementValidate: function(element, eventtype) {
 		var self = this;
@@ -338,6 +375,7 @@ $.validarium.prototype = {
 	/**
 	 * Validates the form
 	 * @return boolean True if ok, false irmessages
+	 * @private
 	 */
 	form: function(eventtype) {
 		var retval = true;
@@ -392,6 +430,7 @@ $.validarium.prototype = {
 	 *
 	 * @param element
 	 * @returns {HTMLElement}
+	 * @private
 	 */
 	elementError: function(element) {
 		var $el = $(element);
@@ -426,6 +465,7 @@ $.validarium.prototype = {
 	 * @param rulename
 	 * @param state one of [true, false, pending, unchecked]
 	 * @param string message The error message, if any.
+	 * @private
 	 */
 	elementNotify: function(element, rulename, newstate, message) {
 		var errorel = this.elementError(element);
@@ -474,6 +514,7 @@ $.validarium.prototype = {
 	 * Calculates the current state from an array of states.
 	 *
 	 * @return one of [true, false, 'pending', 'unchecked']
+	 * @private
 	 */
 	_stateCalculate: function(states) {
 		var finalstate = true;
@@ -507,6 +548,7 @@ $.validarium.prototype = {
 	 *
 	 * @param element
 	 * @returns The current state from an array of states
+	 * @private
 	 */
 	getStates: function (element) {
 		var states = $(element).data('validariumstates');
@@ -522,6 +564,7 @@ $.validarium.prototype = {
 	 * @param methodname
 	 * @param eventtype
 	 * @returns Array
+	 * @private
 	 */
 	getMethods: function(methodname, eventtype) {
 		var self = this;
@@ -538,6 +581,7 @@ $.validarium.prototype = {
 	 * Returns the value of an element, dealing with radio/checkbox/etc.
 	 *
 	 * @return string
+	 * @private
 	 */
 	elementValue: function(element) {
 		var type = $(element).attr('type'),
@@ -556,6 +600,7 @@ $.validarium.prototype = {
 	/**
 	 * Methods that should be called whenever a key is typed (or clicks for some
 	 * elements like select), on blur events or on submit.
+	 * @private
 	 */
 	onalways: {
 		// https://github.com/Corollarium/validarium/wiki/required
@@ -888,6 +933,7 @@ $.validarium.prototype = {
 	/**
 	 * Methods that should be called whenever a key is typed (or clicks for some
 	 * elements like select), on blur events or on submit.
+	 * @private
 	 */
 	ontype: {
 		// https://github.com/Corollarium/validarium/wiki/mask
@@ -898,6 +944,7 @@ $.validarium.prototype = {
 
 	/**
 	 * Methods that should be called only on blur events or on submit.
+	 * @private
 	 */
 	onblur: {
 		/**
@@ -944,6 +991,7 @@ $.validarium.prototype = {
 
 	/**
 	 * Methods that should be called only on submit or when form() is called.
+	 * @private
 	 */
 	onsubmit: {
 		/**
