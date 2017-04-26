@@ -387,21 +387,7 @@ $.validarium.prototype = {
 
 		this.firstinvalid = null; // first invalid element, for focus()
 
-		// the filter will avoid repeated validation of radio/checkbox groups (group = all have the same name)
-		var namesMap = {};
-		this.elements.filter(function() {
-			var name = this.name;
-			if (!name) {
-				return true;
-			}
-			else if (name in namesMap) {
-				return false;
-			}
-			else {
-				namesMap[name] = true;
-				return true;
-			}
-		}).each(function() {
+		this.elements.each(function() {
 			var element = this;
 
 			var valid = self.elementValidate(element, eventtype);
