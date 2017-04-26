@@ -469,41 +469,46 @@ $.validarium.prototype = {
 	 */
 	elementNotify: function(element, rulename, newstate, message) {
 		var errorel = this.elementError(element);
-		element = $(element);
+		var $errorEl = $(errorel);
+		var $element = $(element);
 		var s = this.settings;
 
-		var states = this.getStates(element);
+		var states = this.getStates($element);
 		states[rulename] = {'state': newstate, 'message': message};
-		element.data('validariumstates', states);
+		$element.data('validariumstates', states);
 
 		var finalstate = this._stateCalculate(states);
 
-		element.removeClass(s.errorClass + " " + s.validClass + " " + s.pendingClass);
-		$(errorel).find('.' + s.pendingClass).remove();
+		$element.removeClass(s.errorClass + " " + s.validClass + " " + s.pendingClass);
+		$errorEl.find('.' + s.pendingClass).remove();
 		switch (newstate) {
 		case "pending":
-			$(errorel).append('<li class="' + s.pendingClass + '">Validating...</li>').show();
-			element.addClass(s.pendingClass);
+			$errorEl.append('<li class="' + s.pendingClass + '">Validating...</li>').show();
+			$element.addClass(s.pendingClass);
 			break;
 		case 'unchecked':
 			// TODO
 			break;
 		case false:
-			if (!message) message = 'Error';
-			if (!$(errorel).children('li[data-rule=' + rulename + ']').length) {
-				$(errorel).append('<li data-rule="' + rulename + '">' + message + '</li>');
+			if (!message) {
+				message = 'Error';
+			}
+
+			var $el = $errorEl.children('li[data-rule=' + rulename + ']');
+			if (!$el.length) {
+				$errorEl.append('<li data-rule="' + rulename + '">' + message + '</li>');
 			}
 			else {
-				$(errorel).children('li[data-rule=' + rulename + ']').html(message);
+				$el.html(message);
 			}
-			$(errorel).show();
-			element.addClass(s.errorClass);
+			$errorEl.show();
+			$element.addClass(s.errorClass);
 			break;
 		case true:
-			$(errorel).find('[data-rule=' + rulename + ']').remove();
-			if (!$(errorel).children().length) {
-				$(errorel).hide();
-				element.addClass(s.validClass);
+			$errorEl.find('[data-rule=' + rulename + ']').remove();
+			if (!$errorEl.children().length) {
+				$errorEl.hide();
+				$element.addClass(s.validClass);
 			}
 			break;
 		}
