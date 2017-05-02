@@ -7,13 +7,19 @@
         <mkdir dir="${distdir}" />
     </target>
 
-    <target name="jquery.validarium" depends="init">
-        <concat destfile="${distdir}/${target}">
-            <fileset file="${srcdir}/jquery.validarium.js"/>
-        </concat>
+    <target name="copy" depends="init">
+        <copy todir="${distdir}" flatten="true">
+            <resources>
+                <file file="${srcdir}/jquery.validarium.js"/>
+                <file file="README.md"/>
+                <file file="bower.json"/>
+                <file file="package.json"/>
+                <file file="validarium.jquery.json"/>
+            </resources>
+        </copy>
     </target>
     
-    <target name="jquery.validarium.min" depends="jquery.validarium">
+    <target name="jquery.validarium.min" depends="copy">
         <apply executable="java" parallel="false" verbose="true" failonerror="true" dest="${distdir}">
             <fileset dir="${distdir}">
                 <include name="${target}" />
@@ -30,12 +36,17 @@
        <echo message="${target.min} built." />
     </target>
 
-    <target name="build" depends="jquery.validarium, jquery.validarium.min"/>
+    <target name="build" depends="copy, jquery.validarium.min"/>
+
+    <target name="zip">
+        <zip destfile="validarium.zip" basedir="" includes="dist/*"/>
+    </target>
 
     <target name="clean">
         <delete dir="${distdir}" />
+        <delete file="validarium.zip" />
     </target>
 
-    <target name="all" depends="clean,build"/>
+    <target name="all" depends="clean,build,zip"/>
 
 </project>
