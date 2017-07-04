@@ -62,6 +62,13 @@ $.validarium = function( options, form ) {
 $.extend($.validarium, {
 
 	/**
+	 * Current lib version
+	 * @memberOf $.validarium
+	 * @property {string}
+	 */
+	version: '2.0.0',
+
+	/**
 	 * Types of events TODO
 	 * @memberOf $.validarium
 	 * @property {string[]}
