@@ -30,7 +30,7 @@
   },
   "devDependencies": {
 	"jsdoc": "3.*",
-	"eslint": "3.*",
+	"eslint": "4.*",
     "grunt": "latest",
     "grunt-cli": "latest",
     "qunit": "latest",

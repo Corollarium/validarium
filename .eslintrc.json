@@ -1,27 +1,27 @@
 {
+	"parserOptions": {
+		"ecmaVersion": 5
+	},
+	"extends": "eslint:recommended",
 	"rules": {
-		"no-undef": 2
+		"no-console": 2,
+		"no-unused-vars": 2,
+		"radix": [2, "always"],
+		"block-scoped-var": 2,
+		"consistent-return": 2,
+		"curly": 2,
+		"no-return-assign": 2,
+		"no-void": 2,
+		"no-with": 2,
+		"no-shadow": 2,
+		"no-useless-escape": 0
 	},
 	"globals": {
 		"$": true,
-		"jQuery": true,
-		"io": true,
-		"Promise": true,
-		"Uint8Array": true,
-		"CamCapture": true,
-		"device": true,
-		"FastClick": true,
-		"ss": true,
-		"CamGui": true,
-		"Util": true,
-		"App": true,
-		"Connection": true,
-		"debug": true,
-		"CONST": true,
-		"ArrayBuffer": true,
-		"ezar": true
+		"jQuery": true
 	},
 	"env": {
 		"browser": true
-	}
+	},
+	"root": true
 }
